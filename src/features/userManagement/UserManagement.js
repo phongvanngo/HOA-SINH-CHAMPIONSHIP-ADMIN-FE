@@ -1,9 +1,9 @@
 import React from 'react'
 
-export default function Loading() {
+export default function UserManagement() {
     return (
         <div>
-            Loading
+            User Management
         </div>
     )
 }

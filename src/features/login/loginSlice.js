@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import loginApi from './loginApi';
+import { notistack_config } from './../../common/notitask.config';
 
 export const loginRequest = createAsyncThunk(
     'user/loginRequestStatus',
-    async (loginInfo, thunkApi) => {
-        console.log("response");
+    async ({ loginInfo, enqueueSnackbar }, thunkApi) => {
         const response = await loginApi.sendLoginInfo(loginInfo);
+        enqueueSnackbar
+            ('Đăng nhập thành công!', notistack_config('success'))
         return response;
     }
 )
@@ -22,7 +24,7 @@ export const loginSlice = createSlice({
             state.isLoggedIn = true;
         },
 
-        logOut: state => {
+        logout: state => {
             window.localStorage.removeItem('id_token');
             state.isLoggedIn = false;
         },
@@ -31,7 +33,6 @@ export const loginSlice = createSlice({
     extraReducers: {
         [loginRequest.fulfilled]: (state, action) => {
             const response = action.payload;
-            console.log("logged in");
             localStorage.setItem('id_token', response.data.token);
             state.isLoggedIn = true;
         }
