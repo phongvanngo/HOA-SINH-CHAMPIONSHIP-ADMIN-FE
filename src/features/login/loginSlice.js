@@ -6,8 +6,7 @@ export const loginRequest = createAsyncThunk(
     'user/loginRequestStatus',
     async ({ loginInfo, enqueueSnackbar }, thunkApi) => {
         const response = await loginApi.sendLoginInfo(loginInfo);
-        enqueueSnackbar
-            ('Đăng nhập thành công!', notistack_config('success'))
+        enqueueSnackbar('Đăng nhập thành công!', notistack_config('success'))
         return response;
     }
 )

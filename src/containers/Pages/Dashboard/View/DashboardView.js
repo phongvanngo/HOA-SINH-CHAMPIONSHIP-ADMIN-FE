@@ -3,7 +3,6 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -18,14 +17,12 @@ import clsx from 'clsx';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useStyles } from './DashboardView.style';
-import MainArea from './MainArea';
 import { SidebarOption } from './sidebar_option.const';
 
-
-export default function DashboardView({ handleLogout }) {
+export default function MiniDrawer({ handleLogout }) {
     const classes = useStyles();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -67,11 +64,15 @@ export default function DashboardView({ handleLogout }) {
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        className={clsx(classes.menuButton, open && classes.hide)}
+                        className={clsx(classes.menuButton, {
+                            [classes.hide]: open,
+                        })}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>Persistent drawer</Typography>
+                    <Typography variant="h6" noWrap>
+                        Mini variant drawer
+          </Typography>
                     <div className={classes.grow} />
                     <div className={classes.sectionDesktop}>
                         <IconButton aria-label="show 4 new mails" color="inherit" onClick={handleLogout}>
@@ -81,36 +82,51 @@ export default function DashboardView({ handleLogout }) {
                 </Toolbar>
             </AppBar>
             <Drawer
-                className={classes.drawer}
-                variant="persistent"
-                anchor="left"
-                open={open}
+                variant="permanent"
+                className={clsx(classes.drawer, {
+                    [classes.drawerOpen]: open,
+                    [classes.drawerClose]: !open,
+                })}
                 classes={{
-                    paper: classes.drawerPaper,
+                    paper: clsx({
+                        [classes.drawerOpen]: open,
+                        [classes.drawerClose]: !open,
+                    }),
                 }}
             >
-                <div className={classes.drawerHeader}>
+                <div className={classes.toolbar}>
                     <IconButton onClick={handleDrawerClose}>
-                        {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </div>
                 <Divider />
-
-                <List>
-                    {<SidebarMenu />}
-                </List>
-
-                <Divider />
-
+                <SidebarMenu />
             </Drawer>
-
-            <main
-                className={clsx(classes.content, {
-                    [classes.contentShift]: open,
-                })}
-            >
-                <div className={classes.drawerHeader} />
-                <MainArea />
+            <main className={classes.content}>
+                <div className={classes.toolbar} />
+                <Typography paragraph>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                    ut labore et dolore magna aliqua. Rhoncus dolor purus non enim praesent elementum
+                    facilisis leo vel. Risus at ultrices mi tempus imperdiet. Semper risus in hendrerit
+                    gravida rutrum quisque non tellus. Convallis convallis tellus id interdum velit laoreet id
+                    donec ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
+                    adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra nibh cras.
+                    Metus vulputate eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo quis
+                    imperdiet massa tincidunt. Cras tincidunt lobortis feugiat vivamus at augue. At augue eget
+                    arcu dictum varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem
+                    donec massa sapien faucibus et molestie ac.
+        </Typography>
+                <Typography paragraph>
+                    Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper eget nulla
+                    facilisi etiam dignissim diam. Pulvinar elementum integer enim neque volutpat ac
+                    tincidunt. Ornare suspendisse sed nisi lacus sed viverra tellus. Purus sit amet volutpat
+                    consequat mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
+                    vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra accumsan in. In
+                    hendrerit gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem et
+                    tortor. Habitant morbi tristique senectus et. Adipiscing elit duis tristique sollicitudin
+                    nibh sit. Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra maecenas
+                    accumsan lacus vel facilisis. Nulla posuere sollicitudin aliquam ultrices sagittis orci a.
+        </Typography>
             </main>
         </div>
     );
