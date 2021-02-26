@@ -14,6 +14,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { startLoading, stopLoading } from './../../../common/component/PageLoader/loadingSlice';
 import { fetchExamRequest } from './../ExamSlice';
+import { loginRequest } from './../../login/loginSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +46,8 @@ export default function InteractiveList() {
 
     React.useEffect(() => {
         dispatch(startLoading());
-        dispatch(fetchExamRequest()).then(() => {
+        dispatch(fetchExamRequest({})).then((result) => {
+            console.log(result);
             dispatch(stopLoading());
         })
     }, [])

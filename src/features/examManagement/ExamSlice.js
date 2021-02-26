@@ -4,23 +4,23 @@ import { examApi } from './ExamApi';
 
 export const fetchExamRequest = createAsyncThunk(
     'exam/fetchExamStatus',
-    async (thunkApi) => {
+    async ({ }, thunkApi) => {
+        //nếu không có tham số thứ nhất thì ko dispatch được ?????
         const { dispatch } = thunkApi;
-        console.log('fetchExamRequest');
         try {
-
             let response = await examApi.getExamData();
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Lấy dữ liệu thành công", options: { variant: 'success' } }));
                     return response.data;
+                case 404:
+                    throw new Error("Unauthorized");
                 default:
-                    throw new Error("unsuccessfully");
+                    throw new Error("Unsuccessfully");
             }
         }
         catch (error) {
-            console.log(error);
-            dispatch(notify({ message: "Lỗi kết nối", options: { variant: 'error' } }));
+            dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
             return null;
         }
 
@@ -30,7 +30,8 @@ export const fetchExamRequest = createAsyncThunk(
 export const createExamRequest = createAsyncThunk(
     'exam/createExamStatus',
     async (thunkApi) => {
-        const response = await examApi
+        console.log("hiiii");
+        return null;
     });
 
 export const examSlice = createSlice({
@@ -45,6 +46,10 @@ export const examSlice = createSlice({
 
     extraReducers: {
         [fetchExamRequest.fulfilled]: (state, action) => {
+            const response = action.payload;
+
+        },
+        [createExamRequest.fulfilled]: (state, action) => {
             const response = action.payload;
 
         }

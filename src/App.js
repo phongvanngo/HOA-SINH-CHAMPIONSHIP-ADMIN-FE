@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <SnackbarProvider max={3}>
-        {/* <Notifier /> */}
+        <Notifier />
         <AppRoutes />
       </SnackbarProvider>
       <PageLoader />

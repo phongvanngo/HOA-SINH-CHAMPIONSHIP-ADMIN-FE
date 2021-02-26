@@ -3,10 +3,11 @@ import { fakeApi } from './../../app/fakeApi';
 
 export const examApi = {
     getExamData: async () => {
+        console.log("get exam data");
         let response = await fakeApi({
             request: null,
             response: {
-                status: 200,
+                status: 404,
                 data: fake_exam_list
             }
         })
