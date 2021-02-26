@@ -1,16 +1,16 @@
-import { useSnackbar } from 'notistack';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
 import { loginAgain, loginRequest } from './loginSlice';
 import LoginView from './View/LoginView';
 import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
+import { fetchExamRequest } from './../examManagement/ExamSlice';
+
 
 export default function Login() {
 
     const isLoggedIn = useSelector(state => state.login.isLoggedIn);
     const dispatch = useDispatch();
-    const { enqueueSnackbar } = useSnackbar();
     let location = useLocation();
     const [redirectToReferrer, setRedirectToReferrer] = React.useState(false);
 
@@ -29,7 +29,8 @@ export default function Login() {
 
     const handleLogin = (loginInfo) => {
         dispatch(startLoading());
-        dispatch(loginRequest({ loginInfo, enqueueSnackbar })).then(() => {
+        dispatch(loginRequest(loginInfo)).then(() => {
+            dispatch(fetchExamRequest());
             dispatch(stopLoading());
         });
     }

@@ -2,11 +2,15 @@ import { configureStore } from '@reduxjs/toolkit';
 import counterReducer from '../features/counter/counterSlice';
 import loginReducer from './../features/login/loginSlice';
 import loadingReducer from '../common/component/PageLoader/loadingSlice';
+import examReducer from './../features/examManagement/ExamSlice';
+import notifierReducer from './../common/component/Notifier/notifierSlice';
 
 export default configureStore({
   reducer: {
     counter: counterReducer,
     login: loginReducer,
-    loading: loadingReducer
+    loading: loadingReducer,
+    exam: examReducer,
+    notifier: notifierReducer,
   },
 });

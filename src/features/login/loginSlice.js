@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import loginApi from './loginApi';
-import { notistack_config } from './../../common/notitask.config';
+import { notify } from './../../common/component/Notifier/notifierSlice';
 
 export const loginRequest = createAsyncThunk(
     'user/loginRequestStatus',
-    async ({ loginInfo, enqueueSnackbar }, thunkApi) => {
+    async (loginInfo, thunkApi) => {
         const response = await loginApi.sendLoginInfo(loginInfo);
-        enqueueSnackbar('Đăng nhập thành công!', notistack_config('success'))
+        thunkApi.dispatch(notify({ message: "Đăng nhập thành công", options: { variant: 'success' } }));
         return response;
     }
 )
@@ -34,6 +34,9 @@ export const loginSlice = createSlice({
             const response = action.payload;
             localStorage.setItem('id_token', response.data.token);
             state.isLoggedIn = true;
+
+
+
         }
     }
 })

@@ -1,0 +1,95 @@
+const ExamList = JSON.parse(`
+[{
+  "id": 1,
+  "exam_name": "Temp",
+  "question": 44,
+  "available_question": 23,
+  "total_score": 787
+}, {
+  "id": 2,
+  "exam_name": "Alphazap",
+  "question": 46,
+  "available_question": 22,
+  "total_score": 375
+}, {
+  "id": 3,
+  "exam_name": "Opela",
+  "question": 10,
+  "available_question": 12,
+  "total_score": 541
+}, {
+  "id": 4,
+  "exam_name": "Prodder",
+  "question": 41,
+  "available_question": 29,
+  "total_score": 232
+}, {
+  "id": 5,
+  "exam_name": "Biodex",
+  "question": 16,
+  "available_question": 26,
+  "total_score": 107
+}, {
+  "id": 6,
+  "exam_name": "Keylex",
+  "question": 49,
+  "available_question": 32,
+  "total_score": 619
+}, {
+  "id": 7,
+  "exam_name": "Ronstring",
+  "question": 56,
+  "available_question": 30,
+  "total_score": 161
+}, {
+  "id": 8,
+  "exam_name": "Span",
+  "question": 49,
+  "available_question": 25,
+  "total_score": 696
+}, {
+  "id": 9,
+  "exam_name": "Quo Lux",
+  "question": 31,
+  "available_question": 17,
+  "total_score": 290
+}, {
+  "id": 10,
+  "exam_name": "Latlux",
+  "question": 19,
+  "available_question": 1,
+  "total_score": 823
+}, {
+  "id": 11,
+  "exam_name": "Hatity",
+  "question": 53,
+  "available_question": 38,
+  "total_score": 927
+}, {
+  "id": 12,
+  "exam_name": "Sonair",
+  "question": 56,
+  "available_question": 38,
+  "total_score": 532
+}, {
+  "id": 13,
+  "exam_name": "Subin",
+  "question": 34,
+  "available_question": 3,
+  "total_score": 18
+}, {
+  "id": 14,
+  "exam_name": "Tres-Zap",
+  "question": 55,
+  "available_question": 31,
+  "total_score": 937
+}, {
+  "id": 15,
+  "exam_name": "Solarbreeze",
+  "question": 54,
+  "available_question": 27,
+  "total_score": 17
+}]
+`)
+
+export default ExamList;
