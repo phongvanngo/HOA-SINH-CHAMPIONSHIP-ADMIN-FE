@@ -1,13 +1,30 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import loginApi from './loginApi';
 import { notify } from './../../common/component/Notifier/notifierSlice';
+import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
 
 export const loginRequest = createAsyncThunk(
     'user/loginRequestStatus',
     async (loginInfo, thunkApi) => {
-        const response = await loginApi.sendLoginInfo(loginInfo);
-        thunkApi.dispatch(notify({ message: "Đăng nhập thành công", options: { variant: 'success' } }));
-        return response;
+        const { dispatch } = thunkApi;
+        dispatch(startLoading());
+        try {
+            const response = await loginApi.sendLoginInfo(loginInfo);
+            switch (response.status) {
+                case 200:
+                    dispatch(notify({ message: "Đăng nhập thành công", options: { variant: 'success' } }));
+                    dispatch(stopLoading());
+                    return response.data;
+                case 404:
+                    throw new Error("Sai tên đăng nhập hoặc mật khẩu");
+                default:
+                    throw new Error("Failed");
+            }
+        } catch (error) {
+            dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
+            return null;
+        }
     }
 )
 
@@ -31,12 +48,9 @@ export const loginSlice = createSlice({
 
     extraReducers: {
         [loginRequest.fulfilled]: (state, action) => {
-            const response = action.payload;
-            localStorage.setItem('id_token', response.data.token);
+            const data = action.payload;
+            if (data === null) return;
             state.isLoggedIn = true;
-
-
-
         }
     }
 })

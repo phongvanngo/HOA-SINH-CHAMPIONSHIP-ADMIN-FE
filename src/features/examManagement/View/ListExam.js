@@ -12,9 +12,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FolderIcon from '@material-ui/icons/Folder';
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { startLoading, stopLoading } from './../../../common/component/PageLoader/loadingSlice';
 import { fetchExamRequest } from './../ExamSlice';
-import { loginRequest } from './../../login/loginSlice';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -42,15 +40,10 @@ function generate(element) {
 export default function InteractiveList() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    console.log('render');
 
     React.useEffect(() => {
-        dispatch(startLoading());
-        dispatch(fetchExamRequest({})).then((result) => {
-            console.log(result);
-            dispatch(stopLoading());
-        })
-    }, [])
+        dispatch(fetchExamRequest({}));
+    }, [dispatch])
 
     return (
         <div className={classes.root}>

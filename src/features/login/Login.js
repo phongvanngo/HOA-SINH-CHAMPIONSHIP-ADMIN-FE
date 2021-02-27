@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Redirect, useLocation } from 'react-router-dom';
 import { loginAgain, loginRequest } from './loginSlice';
 import LoginView from './View/LoginView';
-import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
-import { fetchExamRequest } from './../examManagement/ExamSlice';
 
 
 export default function Login() {
@@ -28,11 +26,7 @@ export default function Login() {
 
 
     const handleLogin = (loginInfo) => {
-        dispatch(startLoading());
-        dispatch(loginRequest(loginInfo)).then(() => {
-            dispatch(fetchExamRequest());
-            dispatch(stopLoading());
-        });
+        dispatch(loginRequest(loginInfo));
     }
 
     let { from } = location.state || {

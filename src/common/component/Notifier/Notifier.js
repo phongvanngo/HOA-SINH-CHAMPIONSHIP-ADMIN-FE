@@ -21,7 +21,6 @@ const Notifier = () => {
     };
 
     React.useEffect(() => {
-        console.log("notifi");
         notifications.forEach(
             ({ key, message, options = {}, dismissed = false }) => {
                 if (dismissed) {
@@ -44,7 +43,6 @@ const Notifier = () => {
                     },
                     onExited: (event, myKey) => {
                         // remove this snackbar from redux store
-                        console.log("hello");
                         dispatch(removeSnackbar(myKey));
                         removeDisplayed(myKey);
                     }

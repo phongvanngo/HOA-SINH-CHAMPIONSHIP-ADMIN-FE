@@ -1,8 +1,5 @@
-import React from 'react'
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import ListExam from './View/ListExam';
-import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
-import { fetchExamRequest } from './ExamSlice';
 
 export default function ExamManagement() {
     return (

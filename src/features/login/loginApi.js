@@ -1,11 +1,17 @@
+import { fakeApi } from './../../app/fakeApi';
 
 const loginApi = {
     sendLoginInfo: async (loginInfo) => {
-        const response = await new Promise((resolve, reject) => {
-            setTimeout(() => {
-                resolve({ status: 200, data: { token: "my token" } });
-            }, 2000)
-        });
+        let response = await fakeApi({
+            request: loginInfo,
+            response: {
+                status: 200,
+                data: {
+                    token: "my app token"
+                }
+            }
+        }
+        )
         return response;
     }
 }

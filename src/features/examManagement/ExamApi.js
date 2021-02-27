@@ -3,7 +3,6 @@ import { fakeApi } from './../../app/fakeApi';
 
 export const examApi = {
     getExamData: async () => {
-        console.log("get exam data");
         let response = await fakeApi({
             request: null,
             response: {

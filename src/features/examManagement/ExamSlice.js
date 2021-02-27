@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { notify } from './../../common/component/Notifier/notifierSlice';
 import { examApi } from './ExamApi';
+import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
 
 export const fetchExamRequest = createAsyncThunk(
     'exam/fetchExamStatus',
@@ -8,7 +9,9 @@ export const fetchExamRequest = createAsyncThunk(
         //nếu không có tham số thứ nhất thì ko dispatch được ?????
         const { dispatch } = thunkApi;
         try {
+            dispatch(startLoading());
             let response = await examApi.getExamData();
+            dispatch(stopLoading());
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Lấy dữ liệu thành công", options: { variant: 'success' } }));
@@ -21,6 +24,7 @@ export const fetchExamRequest = createAsyncThunk(
         }
         catch (error) {
             dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
             return null;
         }
 
@@ -30,7 +34,6 @@ export const fetchExamRequest = createAsyncThunk(
 export const createExamRequest = createAsyncThunk(
     'exam/createExamStatus',
     async (thunkApi) => {
-        console.log("hiiii");
         return null;
     });
 

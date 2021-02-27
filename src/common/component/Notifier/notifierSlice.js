@@ -27,7 +27,6 @@ export const notifierSlice = createSlice({
 
         notify: (state, action) => {
             const { message, options } = action.payload;
-            console.log(action.payload);
             const newKey = new Date().getTime() + Math.random();
             const notifications = [
                 ...state.notifications,
@@ -66,7 +65,6 @@ export const notifierSlice = createSlice({
         },
         removeSnackbar: (state, action) => {
             const key = action.payload;
-            console.log(key);
             let notifications = state.notifications.filter((notification) =>
                 notification.key !== key
             )
