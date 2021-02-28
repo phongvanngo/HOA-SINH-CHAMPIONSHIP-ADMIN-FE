@@ -11,8 +11,10 @@ import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FolderIcon from '@material-ui/icons/Folder';
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { fetchExamRequest } from './../ExamSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchExamRequest, deleteExamRequest, createExam, editExam } from './../ExamSlice';
+import ExamItem from './ExamItem';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -27,57 +29,64 @@ const useStyles = makeStyles((theme) => ({
     title: {
         margin: theme.spacing(2, 0, 2),
     },
+    buttonCreateExam: {
+        opacity: 0.4,
+        '&:hover': {
+            opacity: 1
+        }
+    }
 }));
-
-function generate(element) {
-    return [0, 1, 2].map((value) =>
-        React.cloneElement(element, {
-            key: value,
-        }),
-    );
-}
 
 export default function InteractiveList() {
     const classes = useStyles();
     const dispatch = useDispatch();
 
+    const exams = useSelector(state => state.exam.listExams);
+
     React.useEffect(() => {
+        console.log("fetch data");
         dispatch(fetchExamRequest({}));
     }, [dispatch])
+
+    const handleDeleteExam = (question_id) => {
+        if (window.confirm(`Bạn có chắc chắn xóa`)) {
+            dispatch(deleteExamRequest(question_id));
+        }
+    }
+
+    const handleCreateExam = () => {
+        dispatch(createExam());
+    }
+
+    const handleEditExam = (examInfo) => {
+        dispatch(editExam(examInfo));
+    }
 
     return (
         <div className={classes.root}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={12}>
-                    <Typography variant="h6" className={classes.title}>
+                    <Typography
+                        variant="h6" className={classes.title}>
                         Danh sách đề thi
-          </Typography>
+                    <IconButton
+                            className={classes.buttonCreateExam}
+                            onClick={handleCreateExam}
+                        >
+                            <AddToPhotosIcon />
+                        </IconButton>
+                    </Typography>
                     <div className={classes.demo}>
+                        <List>
+                        </List>
                         <List >
-                            {generate(
-                                <ListItem>
-                                    <ListItemAvatar>
-                                        <Avatar>
-                                            <FolderIcon />
-                                        </Avatar>
-                                    </ListItemAvatar>
-                                    <ListItemText
-                                        primary="Single-line item"
-                                        secondary='Secondary text'
-                                    />
-                                    <ListItemSecondaryAction>
-                                        <IconButton edge="end" aria-label="delete">
-                                            <DeleteIcon />
-                                        </IconButton>
-                                        <IconButton edge="end" aria-label="delete">
-                                            <DeleteIcon />
-                                        </IconButton>
-                                        <IconButton edge="end" aria-label="delete">
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>,
-                            )}
+                            {exams.map((exam, index) =>
+                                <ExamItem
+                                    key={index}
+                                    examDetail={exam}
+                                    handleDeleteExam={handleDeleteExam}
+                                    handleEditExam={handleEditExam}
+                                />)}
                         </List>
                     </div>
                 </Grid>

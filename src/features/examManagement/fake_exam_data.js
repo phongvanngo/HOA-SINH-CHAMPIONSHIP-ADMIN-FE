@@ -53,42 +53,6 @@ const ExamList = JSON.parse(`
   "question": 31,
   "available_question": 17,
   "total_score": 290
-}, {
-  "id": 10,
-  "exam_name": "Latlux",
-  "question": 19,
-  "available_question": 1,
-  "total_score": 823
-}, {
-  "id": 11,
-  "exam_name": "Hatity",
-  "question": 53,
-  "available_question": 38,
-  "total_score": 927
-}, {
-  "id": 12,
-  "exam_name": "Sonair",
-  "question": 56,
-  "available_question": 38,
-  "total_score": 532
-}, {
-  "id": 13,
-  "exam_name": "Subin",
-  "question": 34,
-  "available_question": 3,
-  "total_score": 18
-}, {
-  "id": 14,
-  "exam_name": "Tres-Zap",
-  "question": 55,
-  "available_question": 31,
-  "total_score": 937
-}, {
-  "id": 15,
-  "exam_name": "Solarbreeze",
-  "question": 54,
-  "available_question": 27,
-  "total_score": 17
 }]
 `)
 

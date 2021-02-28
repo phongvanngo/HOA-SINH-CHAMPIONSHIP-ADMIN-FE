@@ -49,7 +49,9 @@ export const loginSlice = createSlice({
     extraReducers: {
         [loginRequest.fulfilled]: (state, action) => {
             const data = action.payload;
+            console.log(data);
             if (data === null) return;
+            localStorage.setItem("id_token", data.token);
             state.isLoggedIn = true;
         }
     }

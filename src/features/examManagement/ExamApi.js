@@ -6,27 +6,54 @@ export const examApi = {
         let response = await fakeApi({
             request: null,
             response: {
-                status: 404,
+                status: 200,
                 data: fake_exam_list
-            }
+            },
+            timeOut: 1000
         })
 
         return response;
 
     },
 
-    pushExam: async (examInfo) => {
-        const response = await new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    data: [
-                        {
-                            title: "kaka"
-                        }
-                    ]
-                });
-            }, 2000)
+    pushNewExam: async (examInfo) => {
+        const response = await fakeApi({
+            request: examInfo,
+            response:
+            {
+                status: 200,
+                data: { id: new Date().getTime() + Math.random() }
+            }
         })
         return response;
-    }
+    },
+
+    patchExamInfo: async (examInfo) => {
+        const response = await fakeApi({
+            request: examInfo,
+            response:
+            {
+                status: 200,
+                data: { id: new Date().getTime() + Math.random() }
+            }
+        })
+        return response;
+    },
+
+    deleteExam: async (question_id) => {
+        const response = await fakeApi({
+            request: question_id,
+            response:
+            {
+                status: 200,
+                data: question_id
+            },
+            timeOut: 500
+        })
+        return response;
+    },
+
+
+
+
 }

@@ -1,4 +1,4 @@
-export const fakeApi = ({ request, response }) => {
+export const fakeApi = ({ request, response, timeOut }) => {
     console.log("send ", request);
     const { status, data } = response;
     return new Promise((resolve, reject) => {
@@ -17,6 +17,6 @@ export const fakeApi = ({ request, response }) => {
                 default:
                     reject('error error error');
             }
-        }, 2000);
+        }, timeOut);
     })
 }
