@@ -21,7 +21,7 @@ export const examApi = {
             request: examInfo,
             response:
             {
-                status: 200,
+                status: 500,
                 data: { id: new Date().getTime() + Math.random() }
             }
         })
@@ -33,7 +33,7 @@ export const examApi = {
             request: examInfo,
             response:
             {
-                status: 200,
+                status: 500,
                 data: { id: new Date().getTime() + Math.random() }
             }
         })
@@ -45,7 +45,7 @@ export const examApi = {
             request: question_id,
             response:
             {
-                status: 200,
+                status: 500,
                 data: question_id
             },
             timeOut: 500

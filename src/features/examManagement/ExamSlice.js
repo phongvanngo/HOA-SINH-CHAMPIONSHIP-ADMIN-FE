@@ -24,6 +24,7 @@ export const fetchExamRequest = createAsyncThunk(
         }
         catch (error) {
             dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
             return null;
         }
 
@@ -49,6 +50,7 @@ export const createExamRequest = createAsyncThunk(
 
         } catch (error) {
             dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
             return null;
         }
     });
@@ -72,6 +74,7 @@ export const updateExamRequest = createAsyncThunk(
 
         } catch (error) {
             dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
             return null;
         }
     });
@@ -95,6 +98,7 @@ export const deleteExamRequest = createAsyncThunk(
 
         } catch (error) {
             dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
             return null;
         }
     });

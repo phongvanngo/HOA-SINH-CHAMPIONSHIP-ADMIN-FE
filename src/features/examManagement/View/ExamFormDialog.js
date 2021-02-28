@@ -20,13 +20,13 @@ export default function ExamFormDialog() {
     const examQuestionInputRef = useRef(null);
     const examScoreInpuRef = useRef(null);
 
-    const [isValidInput, setIsValidInput] = useState(
-        {
-            exam_name: true,
-            question: true,
-            total_score: true,
-        }
-    );
+    const initialValidInput = {
+        exam_name: true,
+        question: true,
+        total_score: true,
+    }
+
+    const [isValidInput, setIsValidInput] = useState(initialValidInput);
 
     const [examEditing, setExamEditing] = useState({
         exam_name: null,
@@ -62,7 +62,7 @@ export default function ExamFormDialog() {
         let examInfo = { question: question, total_score: total_score, exam_name: exam_name };
 
         //validate
-        let isValid = isValidInput;
+        let isValid = initialValidInput;
 
         let checkValid = true;
         if (exam_name === "") {
@@ -97,6 +97,9 @@ export default function ExamFormDialog() {
             }
 
             dispatch(closeExamFormDialog());
+
+            //đặt validate lại như cũ
+            setIsValidInput(initialValidInput);
         }
 
         else {
@@ -111,6 +114,7 @@ export default function ExamFormDialog() {
     }
 
     const handleClose = () => {
+        setIsValidInput(initialValidInput);
         dispatch(closeExamFormDialog());
     };
 
@@ -123,10 +127,10 @@ export default function ExamFormDialog() {
                     {isEditExam ? 'Chỉnh sửa đề thi' : 'Tạo mới đề thi'}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
+                    {/* <DialogContentText>
                         To subscribe to this website, please enter your email address here. We will send updates
                         occasionally.
-          </DialogContentText>
+          </DialogContentText> */}
                     <TextField
                         inputRef={examNameInputRef}
                         autoFocus
