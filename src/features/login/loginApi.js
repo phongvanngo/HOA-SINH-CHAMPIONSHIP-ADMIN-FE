@@ -10,6 +10,7 @@ const loginApi = {
                     token: "my app token"
                 }
             }
+            , timeOut: 2000
         }
         )
         return response;

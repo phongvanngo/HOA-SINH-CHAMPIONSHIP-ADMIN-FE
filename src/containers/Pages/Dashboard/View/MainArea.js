@@ -11,14 +11,14 @@ const NotFound = lazy(() => import('./../../../Pages/NotFound/NotFound'));
 
 export default function MainArea() {
     const match = useRouteMatch();
-    const { EXAM_MANAGEMENT, COMPETITION_MANAGEMENT, USER_MANAGEMENT } = DashboardRoutes;
+    const { EXAM_MANAGEMENT, COMPETITION_MANAGEMENT, USER_MANAGEMENT, QUESTION_MANAGEMENT } = DashboardRoutes;
     return (
         <React.Fragment>
             <Switch>
                 <Redirect exact from={match.url} to={COMPETITION_MANAGEMENT} />
                 <Route path={COMPETITION_MANAGEMENT} component={CompetitionManagement} />
                 <Route path={EXAM_MANAGEMENT} component={ExamManagement} />
-                <Route path={EXAM_MANAGEMENT} component={QuestionManagement} />
+                <Route path={`${QUESTION_MANAGEMENT}/:exam_id`} component={QuestionManagement} />
                 <Route path={USER_MANAGEMENT} component={UserManagement} />
                 <Route component={NotFound} />
             </Switch>

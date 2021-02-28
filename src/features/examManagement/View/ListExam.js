@@ -1,21 +1,16 @@
-import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FolderIcon from '@material-ui/icons/Folder';
+import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchExamRequest, deleteExamRequest, createExam, editExam } from './../ExamSlice';
+import { createExam, deleteExamRequest, editExam, fetchExamRequest } from './../ExamSlice';
 import ExamItem from './ExamItem';
-import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
+import { useHistory } from 'react-router-dom';
 
+import { DashboardRoutes } from './../../../routes.const';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function InteractiveList() {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const exams = useSelector(state => state.exam.listExams);
 
@@ -61,6 +57,11 @@ export default function InteractiveList() {
     const handleEditExam = (examInfo) => {
         dispatch(editExam(examInfo));
     }
+
+    const handleOpenExam = ((exam_id) => {
+        console.log(exam_id);
+        history.push(`${DashboardRoutes.QUESTION_MANAGEMENT}/${exam_id}`);
+    })
 
     return (
         <div className={classes.root}>
@@ -86,6 +87,7 @@ export default function InteractiveList() {
                                     examDetail={exam}
                                     handleDeleteExam={handleDeleteExam}
                                     handleEditExam={handleEditExam}
+                                    handleOpenExam={handleOpenExam}
                                 />)}
                         </List>
                     </div>

@@ -4,6 +4,7 @@ import loginReducer from './../features/login/loginSlice';
 import loadingReducer from '../common/component/PageLoader/loadingSlice';
 import examReducer from './../features/examManagement/ExamSlice';
 import notifierReducer from './../common/component/Notifier/notifierSlice';
+import questionReducer from './../features/questionManagement/questionSlice';
 
 export default configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
     loading: loadingReducer,
     exam: examReducer,
     notifier: notifierReducer,
+    question: questionReducer,
   },
 });
