@@ -5,12 +5,12 @@ import { startLoading, stopLoading } from './../../common/component/PageLoader/l
 
 export const fetchQuestionRequest = createAsyncThunk(
     'question/fetchQuestionStatus',
-    async ({ }, thunkApi) => {
+    async (examId, thunkApi) => {
         //nếu không có tham số thứ nhất thì ko dispatch được ?????
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            let response = await questionApi.getQuestionData();
+            let response = await questionApi.getQuestionData(examId);
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
@@ -107,13 +107,15 @@ export const questionSlice = createSlice({
     name: 'question',
     initialState: {
         listQuestions: [],
-        questionEditing: null
+        chosenQuestionId: null,
+        questionEditing: null,
         // {
         //     id: null,
         //     question_name: "abc",
         //     question: 12,
         //     total_score: 123,
         // }
+
     },
 
     reducers: {
@@ -128,6 +130,12 @@ export const questionSlice = createSlice({
         editQuestion: (state, action) => {
             const questionInfo = action.payload;
             state.questionEditing = questionInfo;
+        },
+
+        chooseQuestion: (state, action) => {
+            const questionInfo = action.payload;
+            state.questionEditing = questionInfo;
+            state.chosenQuestionId = questionInfo.id;
         }
     },
 
@@ -185,6 +193,6 @@ export const questionSlice = createSlice({
     }
 })
 
-export const { closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
+export const { chooseQuestion, closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
 
 export default questionSlice.reducer;

@@ -1,5 +1,5 @@
 import { fakeApi } from './../../app/fakeApi';
-import { fake_question_list } from './fake_question_list';
+import { list_question } from './fake_question_list';
 
 export const questionApi = {
     getQuestionData: async (examId) => {
@@ -7,7 +7,7 @@ export const questionApi = {
             request: examId,
             response: {
                 status: 200,
-                data: fake_question_list,
+                data: list_question(examId),
             },
             timeOut: 1000
         })

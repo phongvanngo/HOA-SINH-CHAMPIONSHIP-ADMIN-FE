@@ -1,0 +1,37 @@
+.question-management-main-area{
+    display:flex;
+}
+
+.list-question-area {
+    width: 25%;
+    height: 80vh;
+    border: solid 1px gainsboro;
+    margin-right: 5px;
+    
+}   
+
+.list-question {
+    height: 90%;
+    overflow-y:scroll;
+
+}
+
+.control {
+    margin-top: 5px;
+    height: 10%;
+}
+
+.question-form {
+    width:75%;
+    min-height: 80vh;
+    border: solid 1px gainsboro;
+}
+
+.detailed-exam {
+    text-align: left;
+    margin-bottom: 10px;
+}
+.detailed-exam>span{
+    margin-right:20px;
+}
+

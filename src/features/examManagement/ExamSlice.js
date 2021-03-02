@@ -108,13 +108,14 @@ export const examSlice = createSlice({
     initialState: {
         listExams: [],
         isExamDialogOpen: false,
-        examEditing: null
+        examEditing: null,
         // {
         //     id: null,
         //     exam_name: "abc",
         //     question: 12,
         //     total_score: 123,
         // }
+        detailedChosenExam: null
     },
 
     reducers: {
@@ -133,6 +134,11 @@ export const examSlice = createSlice({
             console.log(examInfo);
             state.isExamDialogOpen = true;
             state.examEditing = examInfo;
+        },
+
+        chooseExam: (state, action) => {
+            const detailedChosenExam = action.payload;
+            state.detailedChosenExam = detailedChosenExam;
         }
     },
 
@@ -190,6 +196,6 @@ export const examSlice = createSlice({
     }
 })
 
-export const { closeExamFormDialog, createExam, editExam } = examSlice.actions;
+export const { chooseExam, closeExamFormDialog, createExam, editExam } = examSlice.actions;
 
 export default examSlice.reducer;

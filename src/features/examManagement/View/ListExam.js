@@ -6,10 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createExam, deleteExamRequest, editExam, fetchExamRequest } from './../ExamSlice';
+import { chooseExam, createExam, deleteExamRequest, editExam, fetchExamRequest } from './../ExamSlice';
 import ExamItem from './ExamItem';
 import { useHistory } from 'react-router-dom';
-
 import { DashboardRoutes } from './../../../routes.const';
 
 const useStyles = makeStyles((theme) => ({
@@ -58,9 +57,9 @@ export default function InteractiveList() {
         dispatch(editExam(examInfo));
     }
 
-    const handleOpenExam = ((exam_id) => {
-        console.log(exam_id);
-        history.push(`${DashboardRoutes.QUESTION_MANAGEMENT}/${exam_id}`);
+    const handleOpenExam = ((detailedExam) => {
+        dispatch(chooseExam(detailedExam));
+        history.push(`${DashboardRoutes.QUESTION_MANAGEMENT}/${detailedExam.id}`);
     })
 
     return (
@@ -84,7 +83,7 @@ export default function InteractiveList() {
                             {exams.map((exam, index) =>
                                 <ExamItem
                                     key={index}
-                                    examDetail={exam}
+                                    detailedExam={exam}
                                     handleDeleteExam={handleDeleteExam}
                                     handleEditExam={handleEditExam}
                                     handleOpenExam={handleOpenExam}

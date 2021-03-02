@@ -12,8 +12,8 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import Tooltip from '@material-ui/core/Tooltip';
 
 export default function ExamItem(props) {
-    const { examDetail, handleDeleteExam, handleEditExam, handleOpenExam } = props;
-    const { id, exam_name, question, available_question, total_score } = examDetail;
+    const { detailedExam, handleDeleteExam, handleEditExam, handleOpenExam } = props;
+    const { id, exam_name, question, available_question, total_score } = detailedExam;
 
     const more_exam_info = `Đã soạn: ${available_question}/${question}    Tổng điểm: ${total_score}`
     return (
@@ -32,7 +32,7 @@ export default function ExamItem(props) {
                 <ListItemSecondaryAction>
                     <Tooltip title="Xem, chỉnh sửa câu hỏi" placement="top-end">
                         <IconButton
-                            onClick={() => { handleOpenExam(id) }}
+                            onClick={() => { handleOpenExam(detailedExam) }}
                             edge="end"
                             aria-label="delete">
                             <OpenInNewIcon />
@@ -41,7 +41,7 @@ export default function ExamItem(props) {
 
                     <Tooltip title="Chỉnh sửa đề thi" placement="top-end">
                         <IconButton
-                            onClick={() => { handleEditExam(examDetail) }}
+                            onClick={() => { handleEditExam(detailedExam) }}
                             edge="end"
                             aria-label="delete">
                             <SettingsIcon />
