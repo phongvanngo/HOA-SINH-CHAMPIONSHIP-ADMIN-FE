@@ -3,6 +3,17 @@ import { notify } from './../../common/component/Notifier/notifierSlice';
 import { questionApi } from './questionApi';
 import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
 
+const initialQuestion = {
+    id: null,
+    exam_id: null,
+    content: "",
+    image: "",
+    answerA: "",
+    answerB: "",
+    answerC: "",
+    answerD: ""
+}
+
 export const fetchQuestionRequest = createAsyncThunk(
     'question/fetchQuestionStatus',
     async (examId, thunkApi) => {
@@ -34,6 +45,7 @@ export const fetchQuestionRequest = createAsyncThunk(
 export const createQuestionRequest = createAsyncThunk(
     'question/createQuestionStatus',
     async (questionInfo, thunkApi) => {
+        console.log(questionInfo);
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
@@ -43,7 +55,7 @@ export const createQuestionRequest = createAsyncThunk(
                 case 200:
                     dispatch(notify({ message: "Thêm đề thi thành công", options: { variant: 'success' } }));
                     dispatch(stopLoading());
-                    return { data: response.data, questionInfo };
+                    return { response_data: response.data, questionInfo };
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -125,7 +137,15 @@ export const questionSlice = createSlice({
         },
 
         createQuestion: (state) => {
-            state.editingQuestion = null;
+            state.isEditingQuestion = true;
+            state.editingQuestion = { ...initialQuestion };
+            state.listQuestions = [
+                ...state.listQuestions,
+                {
+                    ...initialQuestion
+                }
+            ]
+            state.chosenQuestionId = null;
         },
 
         editQuestion: (state, action) => {
@@ -143,34 +163,37 @@ export const questionSlice = createSlice({
 
     extraReducers: {
         [fetchQuestionRequest.fulfilled]: (state, action) => {
-            const response_data = action.payload;
-            if (response_data === null) return;
-            let questions = response_data;
+            const data = action.payload;
+            if (data === null) return;
+            let questions = data;
             state.listQuestions = [...questions];
 
         },
         [createQuestionRequest.fulfilled]: (state, action) => {
-            const response_data = action.payload;
-            if (response_data === null) return;
+            const data = action.payload;
+            if (data === null) return;
 
-            const { data, questionInfo } = response_data;
-            const { id } = data;
-            const newListQuestions = [
-                ...state.listQuestions,
-                {
-                    ...questionInfo,
-                    available_question: 0,
-                    id: id
-                }
-            ]
+            const { response_data, questionInfo } = data;
+            const { id } = response_data;
+            console.log(id);
+            let newQuestion = {
+                ...questionInfo,
+                available_question: 0,
+                id: id
+            };
+            const newListQuestions = state.listQuestions.filter((question) => question.id !== null);
+            newListQuestions.push(newQuestion);
+
+            state.editingQuestion = newQuestion;
             state.listQuestions = newListQuestions;
+            state.chosenQuestionId = id;
+
         },
         [updateQuestionRequest.fulfilled]: (state, action) => {
-            const response_data = action.payload;
-            if (response_data === null) return;
+            const data = action.payload;
+            if (data === null) return;
 
-            const { questionInfo } = response_data;
-            console.log(questionInfo);
+            const { questionInfo } = data;
             const newListQuestions = state.listQuestions.map((question) => {
                 if (question.id === questionInfo.id)
                     return {
@@ -184,9 +207,9 @@ export const questionSlice = createSlice({
             state.listQuestions = newListQuestions;
         },
         [deleteQuestionRequest.fulfilled]: (state, action) => {
-            const response_data = action.payload;
-            if (response_data === null) return;
-            const question_id = response_data;
+            const data = action.payload;
+            if (data === null) return;
+            const question_id = data;
 
             const newListQuestions = state.listQuestions.filter((question) => question.id !== question_id);
 

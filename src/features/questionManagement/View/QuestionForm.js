@@ -11,7 +11,8 @@ import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
 import React, { useEffect, useRef } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { createQuestionRequest, updateQuestionRequest } from './../questionSlice';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -27,8 +28,9 @@ const useStyles = makeStyles((theme) => ({
 export default function CenteredGrid() {
     const classes = useStyles();
     const editingQuestion = useSelector(state => state.question.editingQuestion);
-    // const { _id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion;
+    // const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion;
     const isEditingQuestion = useSelector(state => state.question.isEditingQuestion)
+    const dispatch = useDispatch();
 
     const content_ref = useRef(null);
     const image_ref = useRef(null);
@@ -37,10 +39,44 @@ export default function CenteredGrid() {
     const answerC_ref = useRef(null);
     const answerD_ref = useRef(null);
 
+    const getInputData = () => {
+        return {
+            content: content_ref.current.value,
+            image: image_ref.current.value,
+            answerA: answerA_ref.current.value,
+            answerB: answerB_ref.current.value,
+            answerC: answerC_ref.current.value,
+            answerD: answerD_ref.current.value,
+        }
+    }
+
+    const saveData = () => {
+        let question_id = editingQuestion.id;
+        if (question_id === null) {
+            //tạo câu hỏi mới   
+            console.log("tao")
+            dispatch(createQuestionRequest(getInputData()));
+        }
+
+        else {
+            //update câu hỏi cũ
+            const newQuestion = getInputData();
+            dispatch(updateQuestionRequest(
+                {
+                    id: question_id,
+                    ...newQuestion,
+                }
+            ));
+        }
+    }
+
+    const handleSaveData = () => {
+        saveData();
+    }
+
     useEffect(() => {
         try {
-            console.log(editingQuestion);
-            const { _id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion;
+            const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion;
             content_ref.current.value = content;
             image_ref.current.value = image;
             answerA_ref.current.value = answerA;
@@ -52,7 +88,12 @@ export default function CenteredGrid() {
         }
 
         return () => {
-            console.log('form cancel');
+            try {
+                //try catch vì nếu reload lại thì sẽ sinh lỗi
+                saveData();
+            } catch (error) {
+
+            }
         }
     }, [editingQuestion]);
 
@@ -69,6 +110,7 @@ export default function CenteredGrid() {
             <Grid container spacing={3}>
                 <Grid item xs={12} >
                     <Button
+                        onClick={() => { handleSaveData() }}
                         size="small"
                         variant="contained"
                         color="primary"

@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import { DashboardRoutes } from '../../../routes.const';
-import { fetchQuestionRequest } from '../questionSlice';
+import { fetchQuestionRequest, createQuestion } from '../questionSlice';
 import ListQuestions from './ListQuestions';
 import './MainContainer.css';
 import QuestionForm from './QuestionForm';
@@ -48,6 +48,9 @@ export default function QuestionManagement() {
                     </div>
                     <div className="control">
                         <Button
+                            onClick={() => {
+                                dispatch((createQuestion()))
+                            }}
                             variant="contained"
                             color="default"
                             startIcon={<AddCircleOutlineIcon />}
