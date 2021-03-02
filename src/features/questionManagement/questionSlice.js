@@ -108,7 +108,8 @@ export const questionSlice = createSlice({
     initialState: {
         listQuestions: [],
         chosenQuestionId: null,
-        questionEditing: null,
+        isEditingQuestion: false,
+        editingQuestion: null,
         // {
         //     id: null,
         //     question_name: "abc",
@@ -120,21 +121,22 @@ export const questionSlice = createSlice({
 
     reducers: {
         closeQuestionFormDialog: state => {
-            state.questionEditing = null;
+            state.editingQuestion = null;
         },
 
         createQuestion: (state) => {
-            state.questionEditing = null;
+            state.editingQuestion = null;
         },
 
         editQuestion: (state, action) => {
             const questionInfo = action.payload;
-            state.questionEditing = questionInfo;
+            state.editingQuestion = questionInfo;
         },
 
         chooseQuestion: (state, action) => {
+            state.isEditingQuestion = true;
             const questionInfo = action.payload;
-            state.questionEditing = questionInfo;
+            state.editingQuestion = questionInfo;
             state.chosenQuestionId = questionInfo.id;
         }
     },

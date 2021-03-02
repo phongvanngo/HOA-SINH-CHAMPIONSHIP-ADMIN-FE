@@ -1,16 +1,14 @@
+import { Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
+import { DashboardRoutes } from '../../../routes.const';
 import { fetchQuestionRequest } from '../questionSlice';
 import ListQuestions from './ListQuestions';
-import QuestionForm from './QuestionForm';
 import './MainContainer.css';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { Typography } from '@material-ui/core';
-import { DashboardRoutes } from '../../../routes.const';
-
+import QuestionForm from './QuestionForm';
 
 export default function QuestionManagement() {
     const dispatch = useDispatch();
@@ -38,7 +36,9 @@ export default function QuestionManagement() {
                     <span>{`Tên đề thi: ${detailedChosenExam ? detailedChosenExam.exam_name : ""}`}</span>
                     <span>{`Số câu hỏi: ${detailedChosenExam ? detailedChosenExam.question : ""}`}</span>
                     <span>{`Tổng điểm ${detailedChosenExam ? detailedChosenExam.total_score : ""}`}</span>
+
                 </div>
+
 
             </div>
             <div className="question-management-main-area">

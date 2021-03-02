@@ -14,9 +14,14 @@ export default function QuestionItem(props) {
     const { id, content, } = detailedQuestion;
     const chosenQuestionId = useSelector(state => state.question.chosenQuestionId)
     const dispatch = useDispatch();
+
+    const handleClickQuestion = () => {
+        dispatch(chooseQuestion(detailedQuestion));
+    }
+
     return (
         <React.Fragment>
-            <ListItem button onClick={() => { dispatch(chooseQuestion(detailedQuestion)) }}>
+            <ListItem button onClick={() => { handleClickQuestion() }}>
                 <ListItemIcon>
                     {chosenQuestionId === id ? <EditIcon /> : <ListItemText secondary={`Câu ${index}`} />}
                 </ListItemIcon>
