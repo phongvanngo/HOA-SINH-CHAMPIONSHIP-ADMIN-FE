@@ -6,6 +6,8 @@ const ExamManagement = lazy(() => import('./../../../../features/examManagement/
 const QuestionManagement = lazy(() => import('./../../../../features/questionManagement/QuestionManagement'));
 const UserManagement = lazy(() => import('./../../../../features/userManagement/UserManagement'));
 const CompetitionManagement = lazy(() => import('./../../../../features/competitionManagement/CompetitionManagement'));
+const ContestSessionManagement = lazy(() => import('../../../../features/ContestSessionManagement/SessionManagement'));
+
 
 const NotFound = lazy(() => import('./../../../Pages/NotFound/NotFound'));
 
@@ -16,7 +18,7 @@ export default function MainArea() {
         <React.Fragment>
             <Switch>
                 <Redirect exact from={match.url} to={COMPETITION_MANAGEMENT} />
-                <Route path={COMPETITION_MANAGEMENT} component={CompetitionManagement} />
+                <Route path={COMPETITION_MANAGEMENT} component={ContestSessionManagement} />
                 <Route path={EXAM_MANAGEMENT} component={ExamManagement} />
                 <Route path={`${QUESTION_MANAGEMENT}/:exam_id`} component={QuestionManagement} />
                 <Route path={USER_MANAGEMENT} component={UserManagement} />
