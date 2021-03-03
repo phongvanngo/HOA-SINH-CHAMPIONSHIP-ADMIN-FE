@@ -114,6 +114,12 @@ export const deleteQuestionRequest = createAsyncThunk(
     'question/deleteQuestionStatus',
     async (question_id, thunkApi) => {
         const { dispatch } = thunkApi;
+
+        //trường hợp mới tạo câu hỏi xong và xóa, 
+        if (question_id === null) {
+            return { question_id };
+        }
+
         try {
             dispatch(startLoading());
             const response = await questionApi.deleteQuestion(question_id);
@@ -122,7 +128,7 @@ export const deleteQuestionRequest = createAsyncThunk(
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Xóa đề thi thành công", options: { variant: 'success' } }));
-                    return question_id;
+                    return { question_id };
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -214,7 +220,6 @@ export const questionSlice = createSlice({
 
             state.hasEditRequest = true;
             state.requestQuestion = questionInfo;
-
         },
 
 
@@ -302,11 +307,15 @@ export const questionSlice = createSlice({
         [deleteQuestionRequest.fulfilled]: (state, action) => {
             const data = action.payload;
             if (data === null) return;
-            const question_id = data;
-
+            const { question_id } = data;
+            if (question_id === null) {
+                //trường hợp vừa tạo câu hỏi xong và xóa
+                state.isSavedNewQuestion = true;
+            }
             const newListQuestions = state.listQuestions.filter((question) => question.id !== question_id);
 
             state.listQuestions = newListQuestions;
+            state.editingQuestion = null;
         }
     }
 })

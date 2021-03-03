@@ -12,7 +12,7 @@ import SaveIcon from '@material-ui/icons/Save';
 import React, { useEffect, useRef, useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
-import { createQuestionRequest, updateQuestionRequest, changeCurrentCorrectAnswer } from './../questionSlice';
+import { deleteQuestionRequest, createQuestionRequest, updateQuestionRequest, changeCurrentCorrectAnswer } from './../questionSlice';
 import { useParams } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -119,7 +119,7 @@ export default function CenteredGrid() {
     }
 
     const handleDeleteQuestion = () => {
-
+        dispatch(deleteQuestionRequest(id));
     }
 
     if (editingQuestion === null) return (<div></div>);
@@ -139,6 +139,7 @@ export default function CenteredGrid() {
                         Lưu
       </Button>
                     <Button
+                        onClick={() => { handleDeleteQuestion() }}
                         size="small"
                         variant="contained"
                         color="secondary"
