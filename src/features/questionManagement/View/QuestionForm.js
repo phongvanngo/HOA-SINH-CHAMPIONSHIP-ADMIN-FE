@@ -39,8 +39,10 @@ export default function CenteredGrid() {
     const editingQuestion = useSelector(state => state.question.editingQuestion);
     const hasEditRequest = useSelector(state => state.question.hasEditRequest);
 
+
     const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion || {};
 
+    const [questionImage, setQuestionImage] = useState(image);
     const [currentCorrectAnswer, setCurrentCorrectAnswer] = useState(correctAnswer || 'A');
 
     const handleChangeCorrectAnswer = (event) => {
@@ -69,6 +71,7 @@ export default function CenteredGrid() {
             answerC_ref.current.value = answerC;
             answerD_ref.current.value = answerD;
             setCurrentCorrectAnswer(correctAnswer);
+            setQuestionImage(image);
 
         } catch (error) {
             console.log(error);
@@ -167,19 +170,18 @@ export default function CenteredGrid() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <TextField
-
+                                            onChange={(e) => { setQuestionImage(e.target.value) }}
                                             label="Hình ảnh"
                                             style={{ width: "100%" }}
                                             inputRef={image_ref}
-
                                         />
                                     </Grid>
                                 </Grid>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} md={3}>
-                            <Paper className={classes.paper}>
-                                <img style={{ maxWidth: '150px', maxHeight: "150px", }} src="https://static.wikia.nocookie.net/naruto-viet-nam/images/4/49/Naruto_Shipp%C5%ABden_Logo-1.png/revision/latest?cb=20170427074448&path-prefix=vi" alt="naruto" />
+                            <Paper className={classes.paper} style={{ width: '100%', height: '100%' }}>
+                                <img style={{ maxWidth: '150px', maxHeight: "150px", }} src={questionImage} alt="hình ảnh câu hỏi" />
                             </Paper>
                         </Grid>
                     </Grid>
@@ -192,7 +194,6 @@ export default function CenteredGrid() {
                                 <div className="answer-item">
                                     <FormControlLabel value="A" control={<Radio />} style={{ paddingTop: '15px' }} />
                                     <TextField
-
                                         label="Đáp án A"
                                         style={{ width: "100%" }}
                                         inputRef={answerA_ref}

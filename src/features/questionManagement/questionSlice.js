@@ -170,6 +170,7 @@ export const questionSlice = createSlice({
                 //đang soạn 1 câu hỏi mới mà chọn câu hỏi mới
                 state.isSavedNewQuestion = true;
                 state.hasEditRequest = true;
+                state.editingQuestion = initialQuestion;
             }
             else {
                 state.isSavedNewQuestion = false;
