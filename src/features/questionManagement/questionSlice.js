@@ -24,6 +24,7 @@ const initialQuestion = {
     answerB: "",
     answerC: "",
     answerD: "",
+    answerE: "",
     correctAnswer: "A",
 }
 

@@ -36,11 +36,12 @@ export default function CenteredGrid() {
     const answerB_ref = useRef(null);
     const answerC_ref = useRef(null);
     const answerD_ref = useRef(null);
+    const answerE_ref = useRef(null);
     const editingQuestion = useSelector(state => state.question.editingQuestion);
     const hasEditRequest = useSelector(state => state.question.hasEditRequest);
 
 
-    const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion || {};
+    const { id, content, image, answerA, answerB, answerC, answerD, answerE, correctAnswer } = editingQuestion || {};
 
     const [questionImage, setQuestionImage] = useState(image);
     const [currentCorrectAnswer, setCurrentCorrectAnswer] = useState(correctAnswer || 'A');
@@ -70,6 +71,7 @@ export default function CenteredGrid() {
             answerB_ref.current.value = answerB;
             answerC_ref.current.value = answerC;
             answerD_ref.current.value = answerD;
+            answerE_ref.current.value = answerE;
             setCurrentCorrectAnswer(correctAnswer);
             setQuestionImage(image);
 
@@ -88,6 +90,7 @@ export default function CenteredGrid() {
                 answerB: answerB_ref.current.value,
                 answerC: answerC_ref.current.value,
                 answerD: answerD_ref.current.value,
+                answerE: answerE_ref.current.value,
                 correctAnswer: currentCorrectAnswer,
             };
             return questionInfo;
@@ -227,6 +230,16 @@ export default function CenteredGrid() {
                                         label="Đáp án D"
                                         style={{ width: "100%" }}
                                         inputRef={answerD_ref}
+
+                                    />
+                                </div>
+                                <div className="answer-item">
+                                    <FormControlLabel value="E" control={<Radio />} style={{ paddingTop: '15px' }} />
+                                    <TextField
+
+                                        label="Đáp án E"
+                                        style={{ width: "100%" }}
+                                        inputRef={answerE_ref}
 
                                     />
                                 </div>
