@@ -9,10 +9,11 @@ import RadioGroup from '@material-ui/core/RadioGroup';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import SaveIcon from '@material-ui/icons/Save';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useDispatch, useSelector } from 'react-redux';
-import { createQuestionRequest, updateQuestionRequest } from './../questionSlice';
+import { createQuestionRequest, updateQuestionRequest, changeCurrentCorrectAnswer } from './../questionSlice';
+import { useParams } from 'react-router-dom';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -27,46 +28,84 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CenteredGrid() {
     const classes = useStyles();
-    const editingQuestion = useSelector(state => state.question.editingQuestion);
-    // const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion;
-    const isEditingQuestion = useSelector(state => state.question.isEditingQuestion)
     const dispatch = useDispatch();
-
+    const { exam_id } = useParams();
     const content_ref = useRef(null);
     const image_ref = useRef(null);
     const answerA_ref = useRef(null);
     const answerB_ref = useRef(null);
     const answerC_ref = useRef(null);
     const answerD_ref = useRef(null);
+    const editingQuestion = useSelector(state => state.question.editingQuestion);
+    const hasEditRequest = useSelector(state => state.question.hasEditRequest);
+
+    const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion || {};
+
+    const [currentCorrectAnswer, setCurrentCorrectAnswer] = useState(correctAnswer || 'A');
+
+    const handleChangeCorrectAnswer = (event) => {
+        setCurrentCorrectAnswer(event.target.value);
+    };
+
+    console.log('render', editingQuestion, currentCorrectAnswer);
+
+    useEffect(() => {
+        //khi có yêu cầu sửa câu khác
+        if (hasEditRequest === true && editingQuestion !== null) {
+            saveData();
+        };
+
+    }, [hasEditRequest])
+
+    useEffect(() => {
+        try {
+            content_ref.current.value = content;
+            image_ref.current.value = image;
+            answerA_ref.current.value = answerA;
+            answerB_ref.current.value = answerB;
+            answerC_ref.current.value = answerC;
+            answerD_ref.current.value = answerD;
+            setCurrentCorrectAnswer(correctAnswer);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }, [editingQuestion]);
+
 
     const getInputData = () => {
-        return {
-            content: content_ref.current.value,
-            image: image_ref.current.value,
-            answerA: answerA_ref.current.value,
-            answerB: answerB_ref.current.value,
-            answerC: answerC_ref.current.value,
-            answerD: answerD_ref.current.value,
+        try {
+            const questionInfo = {
+                content: content_ref.current.value,
+                image: image_ref.current.value,
+                answerA: answerA_ref.current.value,
+                answerB: answerB_ref.current.value,
+                answerC: answerC_ref.current.value,
+                answerD: answerD_ref.current.value,
+                correctAnswer: currentCorrectAnswer,
+            };
+            return questionInfo;
+        } catch (error) {
+            return null;
         }
     }
 
     const saveData = () => {
+        const questionInfo = getInputData();
+        if (questionInfo === null) return;
+        let newQuestion = {
+            ...questionInfo,
+            exam_id: exam_id
+        }
+
         let question_id = editingQuestion.id;
         if (question_id === null) {
             //tạo câu hỏi mới   
-            console.log("tao")
-            dispatch(createQuestionRequest(getInputData()));
+            dispatch(createQuestionRequest(newQuestion));
         }
-
         else {
             //update câu hỏi cũ
-            const newQuestion = getInputData();
-            dispatch(updateQuestionRequest(
-                {
-                    id: question_id,
-                    ...newQuestion,
-                }
-            ));
+            dispatch(updateQuestionRequest({ id: question_id, ...newQuestion, }));
         }
     }
 
@@ -74,36 +113,13 @@ export default function CenteredGrid() {
         saveData();
     }
 
-    useEffect(() => {
-        try {
-            const { id, content, image, answerA, answerB, answerC, answerD, correctAnswer } = editingQuestion;
-            content_ref.current.value = content;
-            image_ref.current.value = image;
-            answerA_ref.current.value = answerA;
-            answerB_ref.current.value = answerB;
-            answerC_ref.current.value = answerC;
-            answerD_ref.current.value = answerD;
-        } catch (error) {
-            console.log(error);
-        }
+    const handleDeleteQuestion = () => {
 
-        return () => {
-            try {
-                //try catch vì nếu reload lại thì sẽ sinh lỗi
-                saveData();
-            } catch (error) {
+    }
 
-            }
-        }
-    }, [editingQuestion]);
 
-    const [value, setValue] = React.useState('female');
 
-    const handleChangeCorrectAnswer = (event) => {
-        setValue(event.target.value);
-    };
-
-    if (isEditingQuestion === false) return (<div></div>);
+    if (editingQuestion === null) return (<div></div>);
 
     return (
         <div className={classes.root}>
@@ -168,9 +184,9 @@ export default function CenteredGrid() {
                     <Paper className={classes.paper} style={{ textAlign: 'left' }}>
                         <FormControl component="fieldset" style={{ width: '100%' }}>
                             <FormLabel component="legend" style={{ marginBottom: "10px" }}>Phần đáp án</FormLabel>
-                            <RadioGroup aria-label="gender" name="gender1" value={value} onChange={handleChangeCorrectAnswer} >
+                            <RadioGroup aria-label="gender" name="gender1" value={currentCorrectAnswer} onChange={handleChangeCorrectAnswer} >
                                 <div className="answer-item">
-                                    <FormControlLabel value="answerA" control={<Radio />} style={{ paddingTop: '15px' }} />
+                                    <FormControlLabel value="A" control={<Radio />} style={{ paddingTop: '15px' }} />
                                     <TextField
 
                                         label="Đáp án A"
@@ -180,7 +196,7 @@ export default function CenteredGrid() {
                                     />
                                 </div>
                                 <div className="answer-item">
-                                    <FormControlLabel value="answerB" control={<Radio />} style={{ paddingTop: '15px' }} />
+                                    <FormControlLabel value="B" control={<Radio />} style={{ paddingTop: '15px' }} />
                                     <TextField
 
                                         label="Đáp án B"
@@ -190,7 +206,7 @@ export default function CenteredGrid() {
                                     />
                                 </div>
                                 <div className="answer-item">
-                                    <FormControlLabel value="answerC" control={<Radio />} style={{ paddingTop: '15px' }} />
+                                    <FormControlLabel value="C" control={<Radio />} style={{ paddingTop: '15px' }} />
                                     <TextField
 
                                         label="Đáp án C"
@@ -200,7 +216,7 @@ export default function CenteredGrid() {
                                     />
                                 </div>
                                 <div className="answer-item">
-                                    <FormControlLabel value="answerD" control={<Radio />} style={{ paddingTop: '15px' }} />
+                                    <FormControlLabel value="D" control={<Radio />} style={{ paddingTop: '15px' }} />
                                     <TextField
 
                                         label="Đáp án D"

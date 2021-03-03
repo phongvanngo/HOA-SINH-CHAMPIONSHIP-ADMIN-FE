@@ -5,7 +5,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import StarIcon from '@material-ui/icons/Star';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { chooseQuestion } from './../questionSlice';
+import { editQuestion } from './../questionSlice';
 import EditIcon from '@material-ui/icons/Edit';
 import { reduceParagraph } from './../../../app/utilities';
 
@@ -16,7 +16,7 @@ export default function QuestionItem(props) {
     const dispatch = useDispatch();
 
     const handleClickQuestion = () => {
-        dispatch(chooseQuestion(detailedQuestion));
+        dispatch(editQuestion(detailedQuestion));
     }
 
     return (

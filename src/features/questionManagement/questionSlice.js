@@ -3,6 +3,18 @@ import { notify } from './../../common/component/Notifier/notifierSlice';
 import { questionApi } from './questionApi';
 import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
 
+const shouldSaveData = (prevQuestion, currQuestion) => {
+    if (prevQuestion === null || currQuestion === null) return true;
+    if (prevQuestion.content !== currQuestion.content) return true;
+    if (prevQuestion.image !== currQuestion.image) return true;
+    if (prevQuestion.answerA !== currQuestion.answerA) return true;
+    if (prevQuestion.answerB !== currQuestion.answerB) return true;
+    if (prevQuestion.answerC !== currQuestion.answerC) return true;
+    if (prevQuestion.answerD !== currQuestion.answerD) return true;
+    if (prevQuestion.correctAnswer !== currQuestion.correctAnswer) return true;
+    return false;
+}
+
 const initialQuestion = {
     id: null,
     exam_id: null,
@@ -11,7 +23,8 @@ const initialQuestion = {
     answerA: "",
     answerB: "",
     answerC: "",
-    answerD: ""
+    answerD: "",
+    correctAnswer: "A",
 }
 
 export const fetchQuestionRequest = createAsyncThunk(
@@ -46,7 +59,8 @@ export const createQuestionRequest = createAsyncThunk(
     'question/createQuestionStatus',
     async (questionInfo, thunkApi) => {
         console.log(questionInfo);
-        const { dispatch } = thunkApi;
+        const { dispatch, getState } = thunkApi;
+
         try {
             dispatch(startLoading());
             const response = await questionApi.pushNewQuestion(questionInfo);
@@ -70,7 +84,12 @@ export const createQuestionRequest = createAsyncThunk(
 export const updateQuestionRequest = createAsyncThunk(
     'question/editQuestionStatus',
     async (questionInfo, thunkApi) => {
-        const { dispatch } = thunkApi;
+        const { dispatch, getState } = thunkApi;
+
+        //kiểm tra 
+        const editingQuestion = getState().question.editingQuestion;
+        if (shouldSaveData(editingQuestion, questionInfo) === false) return null;
+
         try {
             dispatch(startLoading());
             const response = await questionApi.patchQuestionInfo(questionInfo);
@@ -122,12 +141,23 @@ export const questionSlice = createSlice({
         chosenQuestionId: null,
         isEditingQuestion: false,
         editingQuestion: null,
+
+        hasEditRequest: false,
+        requestQuestion: null,
+
         // {
         //     id: null,
         //     question_name: "abc",
         //     question: 12,
         //     total_score: 123,
-        // }
+        // },
+        currentCorrectAnswer: 'A',
+
+        //dùng để back up giá trị chọn trước đó
+        prev_chosenCorrectAnswer: 'A',
+        prev_editedQuestion: null,
+
+        //chọn xem câu khác --> lưu yêu cầu biến --> save dữ liệu hiện tại --> chuyển đến câu đó
 
     },
 
@@ -146,18 +176,41 @@ export const questionSlice = createSlice({
                 }
             ]
             state.chosenQuestionId = null;
+            state.hasEditRequest = true;
+            state.requestQuestion = initialQuestion;
+
         },
 
         editQuestion: (state, action) => {
             const questionInfo = action.payload;
-            state.editingQuestion = questionInfo;
+            state.requestQuestion = questionInfo;
+            if (state.editingQuestion === null) {
+                state.hasEditRequest = false;
+                state.editingQuestion = questionInfo;
+                state.chosenQuestionId = questionInfo.id;
+            } else {
+                state.hasEditRequest = true;
+            }
+        },
+
+        gotoQuestion: (state, action) => {
+            state.editQuestion = state.requestQuestion;
         },
 
         chooseQuestion: (state, action) => {
-            state.isEditingQuestion = true;
+
             const questionInfo = action.payload;
-            state.editingQuestion = questionInfo;
-            state.chosenQuestionId = questionInfo.id;
+
+            state.hasEditRequest = true;
+            state.requestQuestion = questionInfo;
+
+        },
+
+        changeCurrentCorrectAnswer: (state, action) => {
+            const currentCorrectAnswer = action.payload;
+            // state.currentCorrectAnswer = currentCorrectAnswer;
+            state.prev_chosenCorrectAnswer = currentCorrectAnswer;
+
         }
     },
 
@@ -179,18 +232,32 @@ export const questionSlice = createSlice({
             let newQuestion = {
                 ...questionInfo,
                 available_question: 0,
-                id: id
+                id: id,
             };
             const newListQuestions = state.listQuestions.filter((question) => question.id !== null);
             newListQuestions.push(newQuestion);
 
             state.editingQuestion = newQuestion;
             state.listQuestions = newListQuestions;
-            state.chosenQuestionId = id;
+            if (state.chosenQuestionId === null)
+                state.chosenQuestionId = id;
+
+            if (state.hasEditRequest === true) {
+                state.chosenQuestionId = state.requestQuestion.id;
+                state.editingQuestion = state.requestQuestion;
+                state.hasEditRequest = false;
+            }
 
         },
         [updateQuestionRequest.fulfilled]: (state, action) => {
             const data = action.payload;
+
+            if (state.hasEditRequest === true) {
+                state.chosenQuestionId = state.requestQuestion.id;
+                state.editingQuestion = state.requestQuestion;
+                state.hasEditRequest = false;
+            }
+
             if (data === null) return;
 
             const { questionInfo } = data;
@@ -205,6 +272,7 @@ export const questionSlice = createSlice({
             })
 
             state.listQuestions = newListQuestions;
+
         },
         [deleteQuestionRequest.fulfilled]: (state, action) => {
             const data = action.payload;
@@ -218,6 +286,6 @@ export const questionSlice = createSlice({
     }
 })
 
-export const { chooseQuestion, closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
+export const { gotoQuestion, changeCurrentCorrectAnswer, chooseQuestion, closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
 
 export default questionSlice.reducer;
