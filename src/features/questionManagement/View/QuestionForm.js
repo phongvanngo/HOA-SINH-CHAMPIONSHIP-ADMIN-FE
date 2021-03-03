@@ -47,17 +47,20 @@ export default function CenteredGrid() {
         setCurrentCorrectAnswer(event.target.value);
     };
 
-    console.log('render', editingQuestion, currentCorrectAnswer);
+    console.log("question form render", editingQuestion, hasEditRequest);
 
     useEffect(() => {
         //khi có yêu cầu sửa câu khác
+        console.log("request -- render");
         if (hasEditRequest === true && editingQuestion !== null) {
             saveData();
         };
 
     }, [hasEditRequest])
 
+
     useEffect(() => {
+        console.log("editing -- render");
         try {
             content_ref.current.value = content;
             image_ref.current.value = image;
@@ -99,6 +102,8 @@ export default function CenteredGrid() {
         }
 
         let question_id = editingQuestion.id;
+        // dispatch(updateQuestionRequest({ id: question_id, ...newQuestion, }));
+
         if (question_id === null) {
             //tạo câu hỏi mới   
             dispatch(createQuestionRequest(newQuestion));
@@ -116,8 +121,6 @@ export default function CenteredGrid() {
     const handleDeleteQuestion = () => {
 
     }
-
-
 
     if (editingQuestion === null) return (<div></div>);
 

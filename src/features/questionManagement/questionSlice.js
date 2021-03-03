@@ -139,27 +139,19 @@ export const questionSlice = createSlice({
     initialState: {
         listQuestions: [],
         chosenQuestionId: null,
-        isEditingQuestion: false,
+
         editingQuestion: null,
 
         hasEditRequest: false,
         requestQuestion: null,
+        isSavedNewQuestion: true,
 
-        // {
-        //     id: null,
-        //     question_name: "abc",
-        //     question: 12,
-        //     total_score: 123,
-        // },
-        currentCorrectAnswer: 'A',
 
-        //dùng để back up giá trị chọn trước đó
-        prev_chosenCorrectAnswer: 'A',
-        prev_editedQuestion: null,
 
         //chọn xem câu khác --> lưu yêu cầu biến --> save dữ liệu hiện tại --> chuyển đến câu đó
-
-    },
+        //tạo câu hỏi mới --> soạn, chưa lưu --> tạo câu hỏi mới
+        //createQuestion ____nếu chưa lưu (isSavedNewQuestion == false)___ save câu hỏi
+    },              //  |____nếu lưu rồi  ___ tạo mảng mới      
 
     reducers: {
         closeQuestionFormDialog: state => {
@@ -168,22 +160,41 @@ export const questionSlice = createSlice({
 
         createQuestion: (state) => {
             state.isEditingQuestion = true;
-            state.editingQuestion = { ...initialQuestion };
-            state.listQuestions = [
-                ...state.listQuestions,
-                {
-                    ...initialQuestion
+            if (state.isSavedNewQuestion === false) {
+                //đang soạn 1 câu hỏi mới mà chọn câu hỏi mới
+                state.isSavedNewQuestion = true;
+                state.hasEditRequest = true;
+            }
+            else {
+                state.isSavedNewQuestion = false;
+                state.listQuestions = [
+                    ...state.listQuestions,
+                    {
+                        ...initialQuestion
+                    }
+                ]
+                state.requestQuestion = initialQuestion;
+
+                if (state.editingQuestion === null) {
+                    state.hasEditRequest = false;
+                    state.editingQuestion = initialQuestion;
+                    state.chosenQuestionId = null;
+                } else {
+                    state.hasEditRequest = true;
                 }
-            ]
-            state.chosenQuestionId = null;
-            state.hasEditRequest = true;
-            state.requestQuestion = initialQuestion;
+
+            }
 
         },
 
         editQuestion: (state, action) => {
             const questionInfo = action.payload;
+
+            //nếu chọn lại chính câu hỏi đó;
+            if (questionInfo.id === state.chosenQuestionId) return;
+
             state.requestQuestion = questionInfo;
+
             if (state.editingQuestion === null) {
                 state.hasEditRequest = false;
                 state.editingQuestion = questionInfo;
@@ -206,12 +217,7 @@ export const questionSlice = createSlice({
 
         },
 
-        changeCurrentCorrectAnswer: (state, action) => {
-            const currentCorrectAnswer = action.payload;
-            // state.currentCorrectAnswer = currentCorrectAnswer;
-            state.prev_chosenCorrectAnswer = currentCorrectAnswer;
 
-        }
     },
 
     extraReducers: {
@@ -237,16 +243,35 @@ export const questionSlice = createSlice({
             const newListQuestions = state.listQuestions.filter((question) => question.id !== null);
             newListQuestions.push(newQuestion);
 
-            state.editingQuestion = newQuestion;
-            state.listQuestions = newListQuestions;
-            if (state.chosenQuestionId === null)
-                state.chosenQuestionId = id;
+            if (state.isSavedNewQuestion === false) {
 
-            if (state.hasEditRequest === true) {
-                state.chosenQuestionId = state.requestQuestion.id;
-                state.editingQuestion = state.requestQuestion;
+                //tiếp tục câu hỏi mới
+                state.isSavedNewQuestion = true;
+
+                state.editingQuestion = newQuestion;
+
+                if (state.chosenQuestionId === null)
+                    state.chosenQuestionId = id;
+
+                if (state.hasEditRequest === true) {
+                    state.chosenQuestionId = state.requestQuestion.id;
+                    state.editingQuestion = state.requestQuestion;
+                    state.hasEditRequest = false;
+                }
+
+            } else {
+                //đang soạn câu hỏi mới và chọn câu hỏi mới
+                newListQuestions.push(initialQuestion);
+
+                state.chosenQuestionId = null;
+                state.editingQuestion = initialQuestion;
                 state.hasEditRequest = false;
+                state.isSavedNewQuestion = false;
+
             }
+
+            state.listQuestions = newListQuestions;
+
 
         },
         [updateQuestionRequest.fulfilled]: (state, action) => {
@@ -286,6 +311,6 @@ export const questionSlice = createSlice({
     }
 })
 
-export const { gotoQuestion, changeCurrentCorrectAnswer, chooseQuestion, closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
+export const { gotoQuestion, chooseQuestion, closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
 
 export default questionSlice.reducer;
