@@ -52,6 +52,30 @@ export const contestSessionApi = {
         })
         return response;
     },
+    activeContestSession: async (contest_session_id) => {
+        const response = await fakeApi({
+            request: contest_session_id,
+            response:
+            {
+                status: 200,
+                data: contest_session_id
+            },
+            timeOut: 200
+        })
+        return response;
+    },
+    deactiveContestSession: async (contest_session_id) => {
+        const response = await fakeApi({
+            request: contest_session_id,
+            response:
+            {
+                status: 200,
+                data: contest_session_id
+            },
+            timeOut: 200
+        })
+        return response;
+    },
 
 
 

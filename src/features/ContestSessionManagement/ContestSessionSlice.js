@@ -66,7 +66,7 @@ export const updateContestSessionRequest = createAsyncThunk(
 
             switch (response.status) {
                 case 200:
-                    dispatch(notify({ message: "Sửa đề thi thành công", options: { variant: 'success' } }));
+                    dispatch(notify({ message: "Sửa ca thi thành công", options: { variant: 'success' } }));
                     return { data: response.data, contestSessionInfo };
                 default:
                     throw new Error("Lỗi kết nối");
@@ -90,7 +90,7 @@ export const deleteContestSessionRequest = createAsyncThunk(
 
             switch (response.status) {
                 case 200:
-                    dispatch(notify({ message: "Xóa đề thi thành công", options: { variant: 'success' } }));
+                    dispatch(notify({ message: "Xóa ca thi thành công", options: { variant: 'success' } }));
                     return question_id;
                 default:
                     throw new Error("Lỗi kết nối");
@@ -103,6 +103,53 @@ export const deleteContestSessionRequest = createAsyncThunk(
         }
     });
 
+
+export const activeContestSessionRequest = createAsyncThunk(
+    'contestSession/activeContestSessionStatus',
+    async (contest_session_id, thunkApi) => {
+        const { dispatch } = thunkApi;
+        try {
+            dispatch(startLoading());
+            const response = await contestSessionApi.activeContestSession(contest_session_id);
+            dispatch(stopLoading());
+
+            switch (response.status) {
+                case 200:
+                    dispatch(notify({ message: "Mở ca thi thành công", options: { variant: 'success' } }));
+                    return contest_session_id;
+                default:
+                    throw new Error("Lỗi kết nối");
+            }
+
+        } catch (error) {
+            dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
+            return null;
+        }
+    });
+export const deactiveContestSessionRequest = createAsyncThunk(
+    'contestSession/deactiveContestSessionStatus',
+    async (contest_session_id, thunkApi) => {
+        const { dispatch } = thunkApi;
+        try {
+            dispatch(startLoading());
+            const response = await contestSessionApi.deactiveContestSession(contest_session_id);
+            dispatch(stopLoading());
+
+            switch (response.status) {
+                case 200:
+                    dispatch(notify({ message: "Đóng ca thi thành công", options: { variant: 'success' } }));
+                    return contest_session_id;
+                default:
+                    throw new Error("Lỗi kết nối");
+            }
+
+        } catch (error) {
+            dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
+            dispatch(stopLoading());
+            return null;
+        }
+    });
 export const contestSessionSlice = createSlice({
     name: 'contestSession',
     initialState: {
@@ -177,6 +224,40 @@ export const contestSessionSlice = createSlice({
                     return {
                         ...contestSession,
                         ...contestSessionInfo
+                    }
+                else
+                    return { ...contestSession };
+            })
+
+            state.listContestSessions = newListContestSessions;
+        },
+        [activeContestSessionRequest.fulfilled]: (state, action) => {
+            const response_data = action.payload;
+            if (response_data === null) return;
+
+            const contestSessionId = response_data;
+            const newListContestSessions = state.listContestSessions.map((contestSession) => {
+                if (contestSession.id === contestSessionId)
+                    return {
+                        ...contestSession,
+                        is_active: true,
+                    }
+                else
+                    return { ...contestSession };
+            })
+
+            state.listContestSessions = newListContestSessions;
+        },
+        [deactiveContestSessionRequest.fulfilled]: (state, action) => {
+            const response_data = action.payload;
+            if (response_data === null) return;
+
+            const contestSessionId = response_data;
+            const newListContestSessions = state.listContestSessions.map((contestSession) => {
+                if (contestSession.id === contestSessionId)
+                    return {
+                        ...contestSession,
+                        is_active: false,
                     }
                 else
                     return { ...contestSession };

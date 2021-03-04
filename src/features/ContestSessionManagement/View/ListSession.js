@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { chooseContestSession, createContestSession, deleteContestSessionRequest, editContestSession, fetchContestSessionRequest } from '../ContestSessionSlice';
+import { activeContestSessionRequest, deactiveContestSessionRequest, createContestSession, deleteContestSessionRequest, editContestSession, fetchContestSessionRequest } from '../ContestSessionSlice';
 import ContestSessionItem from './SessionItem';
 import { useHistory } from 'react-router-dom';
 import { DashboardRoutes } from '../../../routes.const';
@@ -14,11 +14,13 @@ import { DashboardRoutes } from '../../../routes.const';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
-        maxWidth: 752,
+        maxWidth: '100%',
         margin: 'auto'
     },
     demo: {
         backgroundColor: theme.palette.background.paper,
+        display: 'flex',
+        flexWrap: 'wrap',
     },
     title: {
         margin: theme.spacing(2, 0, 2),
@@ -34,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
 export default function InteractiveList() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    const history = useHistory();
 
     const contestSessions = useSelector(state => state.contestSession.listContestSessions);
 
@@ -57,6 +58,13 @@ export default function InteractiveList() {
         dispatch(editContestSession(contestSessionInfo));
     }
 
+    const handleToggleContestSession = (is_active, id) => {
+        if (is_active === true)
+            dispatch(deactiveContestSessionRequest(id))
+        else
+            dispatch(activeContestSessionRequest(id))
+    }
+
     const handleOpenContestSession = ((detailedContestSession) => {
         // dispatch(chooseContestSession(detailedContestSession));
         // history.push(`${DashboardRoutes.QUESTION_MANAGEMENT}/${detailedContestSession.id}`);
@@ -68,7 +76,7 @@ export default function InteractiveList() {
                 <Grid item xs={12} md={12}>
                     <Typography
                         variant="h6" className={classes.title}>
-                        Danh sách đề thi
+                        Danh sách ca thi
                     <IconButton
                             className={classes.buttonCreateContestSession}
                             onClick={handleCreateContestSession}
@@ -77,7 +85,16 @@ export default function InteractiveList() {
                         </IconButton>
                     </Typography>
                     <div className={classes.demo}>
-                        <List>
+                        {contestSessions.map((contestSession, index) =>
+                            <ContestSessionItem
+                                key={index}
+                                detailedContestSession={contestSession}
+                                handleDeleteContestSession={handleDeleteContestSession}
+                                handleEditContestSession={handleEditContestSession}
+                                handleOpenContestSession={handleOpenContestSession}
+                                handleToggleContestSession={handleToggleContestSession}
+                            />)}
+                        {/* <List>
                         </List>
                         <List >
                             {contestSessions.map((contestSession, index) =>
@@ -88,7 +105,7 @@ export default function InteractiveList() {
                                     handleEditContestSession={handleEditContestSession}
                                     handleOpenContestSession={handleOpenContestSession}
                                 />)}
-                        </List>
+                        </List> */}
                     </div>
                 </Grid>
             </Grid>

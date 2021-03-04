@@ -1,130 +1,109 @@
-import React, { useRef, useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeContestSessionFormDialog } from '../ContestSessionSlice';
-import { createContestSessionRequest, updateContestSessionRequest } from '../ContestSessionSlice';
-
+import { createContestSessionRequest, closeContestSessionFormDialog, updateContestSessionRequest } from '../ContestSessionSlice';
 export default function ContestSessionFormDialog() {
-    const dispatch = useDispatch();
+
     const isOpen = useSelector(state => state.contestSession.isContestSessionDialogOpen);
     let contestSession = useSelector(state => state.contestSession.contestSessionEditing);
-    const [isEditContestSession, setIsEditContestSession] = useState(false);
+    let listExams = useSelector(state => state.exam.listExams)
+    const dispatch = useDispatch();
+
+    const { id, name, exam_id } = contestSession || {};
 
     const contestSessionNameInputRef = useRef(null);
-    const contestSessionQuestionInputRef = useRef(null);
-    const contestSessionScoreInpuRef = useRef(null);
 
-    const initialValidInput = {
-        contestSession_name: true,
-        question: true,
-        total_score: true,
+
+    const inititalValidInput = {
+        contestSessionName: true,
+        contestSessionExam: true,
     }
+    const [validInput, setValidInput] = useState(inititalValidInput);
 
-    const [isValidInput, setIsValidInput] = useState(initialValidInput);
+    const [chosenExam, setChosenExam] = useState(listExams[0]);
+    const [flag, setFlag] = useState(0);
 
-    const [contestSessionEditing, setContestSessionEditing] = useState({
-        contestSession_name: null,
-        question: null,
-        total_score: null,
-    });
 
     useEffect(() => {
-        // khi sửa câu hỏi đã có, thao tác để lấy giá trị ref, cập nhật lại input ban đầu  
-        if (contestSession !== null) {
-            setContestSessionEditing({
-                ...contestSession,
-                id: contestSession.id
-            });
-            setIsEditContestSession(true);
+        if (isOpen === true) {
+            // setChosenExam(null);
+            //nếu sửa ca thi, setFlag để render lại và lấy ref của input
+            if (contestSession !== null) {
+                setFlag(flag + 1);
+            }
+        } else {
+            setValidInput(inititalValidInput);
         }
-        else {
-            setIsEditContestSession(false);
-        }
-    }, [contestSession]);
+    }, [isOpen])
 
     useEffect(() => {
-        //cập nhật giá trị ban đầu
-        if (contestSessionQuestionInputRef.current !== null) contestSessionQuestionInputRef.current.value = contestSessionEditing.question;
-        if (contestSessionScoreInpuRef.current !== null) contestSessionScoreInpuRef.current.value = contestSessionEditing.total_score;
-        if (contestSessionNameInputRef.current !== null) contestSessionNameInputRef.current.value = contestSessionEditing.contestSession_name;
-    }, [contestSessionEditing])
+        //nếu sửa ca thi
+        try {
+            contestSessionNameInputRef.current.value = name;
+        } catch (error) {
 
-    const handleSubmit = () => {
-        const contestSession_name = contestSessionNameInputRef.current.value;
-        const question = contestSessionQuestionInputRef.current.value;
-        const total_score = contestSessionScoreInpuRef.current.value;
-        let contestSessionInfo = { question: question, total_score: total_score, contestSession_name: contestSession_name };
-
-        //validate
-        let isValid = initialValidInput;
-
-        let checkValid = true;
-        if (contestSession_name === "") {
-            isValid.contestSession_name = false;
-            checkValid = false;
-        }
-        if (isNaN(Number(question)) || question === "") {
-            isValid.question = false;
-            checkValid = false;
-        };
-        if (isNaN(Number(total_score)) || total_score === "") {
-            isValid.total_score = false;
-            checkValid = false;
-        };
-
-        if (checkValid === true) {
-
-            let newContestSessionInfo = {
-                contestSession_name: contestSession_name,
-                question: Number(question),
-                total_score: Number(total_score)
-            };
-
-            if (isEditContestSession === false) {
-                //tạo câu hỏi mới
-                dispatch(createContestSessionRequest(newContestSessionInfo));
-            }
-            else {
-                //cập nhật câu hỏi cũ
-                newContestSessionInfo = { ...newContestSessionInfo, id: contestSessionEditing.id };
-                dispatch(updateContestSessionRequest(newContestSessionInfo));
-            }
-
-            dispatch(closeContestSessionFormDialog());
-
-            //đặt validate lại như cũ
-            setIsValidInput(initialValidInput);
         }
 
-        else {
+    }, [flag])
 
-            setContestSessionEditing({
-                ...contestSessionEditing,
-                ...contestSessionInfo
-            })
+    const CheckValidInput = (dataSubmit) => {
+        let valid = true;
+        let validInputDetail = inititalValidInput;
+        const { exam_id, name } = dataSubmit;
 
-            setIsValidInput(isValid);
+
+        if (name.trim() === "") {
+            valid = false;
+            validInputDetail.contestSessionName = false;
         }
+
+        if (exam_id === null) {
+            valid = false;
+            validInputDetail.contestSessionExam = false;
+        }
+
+        if (valid === false) {
+            setValidInput(validInputDetail);
+            return false;
+        }
+        else
+            return true;
     }
 
     const handleClose = () => {
-        setIsValidInput(initialValidInput);
         dispatch(closeContestSessionFormDialog());
-    };
+    }
+
+    const handleSubmit = () => {
+        const dataSubmit = {
+            id: id,
+            exam_id: chosenExam ? chosenExam.id : null,
+            name: contestSessionNameInputRef.current.value,
+        }
+
+        if (CheckValidInput(dataSubmit) === true) {
+            if (contestSession === null) {
+                dispatch(createContestSessionRequest(dataSubmit));
+            }
+            else
+                dispatch(updateContestSessionRequest(dataSubmit));
+        }
+    }
 
     if (isOpen === false) return null;
+
 
     return (
         <div>
             <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    {isEditContestSession ? 'Chỉnh sửa đề thi' : 'Tạo mới đề thi'}
+                    {contestSession ? 'Chỉnh sửa đề thi' : 'Tạo mới ca thi'}
                 </DialogTitle>
                 <DialogContent>
                     {/* <DialogContentText>
@@ -132,16 +111,38 @@ export default function ContestSessionFormDialog() {
                         occasionally.
           </DialogContentText> */}
                     <TextField
+                        style={{ marginBottom: "20px" }}
                         inputRef={contestSessionNameInputRef}
                         autoFocus
                         margin="dense"
-                        label="Tên đề thi"
+                        label="Tên ca thi"
                         type="email"
                         fullWidth
-                        error={!isValidInput.contestSession_name}
-                        helperText={isValidInput.contestSession_name ? "" : "Dữ liệu còn trống"}
+                        variant="outlined"
+                        error={!validInput.contestSessionName}
+                        helperText={!validInput.contestSessionName ? "Dữ liệu không được để trống" : ""}
                     />
-                    <TextField
+                    <Autocomplete
+                        defaultValue={listExams.find(exam => exam.id === exam_id)}
+                        id="combo-box-demo"
+                        options={listExams}
+                        value={chosenExam}
+                        getOptionLabel={(option) => option.exam_name}
+                        onChange={(event, newValue) => {
+                            console.log(newValue);
+                            setChosenExam(newValue)
+                        }}
+                        style={{ width: 300 }}
+                        renderInput={(params) =>
+                            <TextField {...params}
+                                label="Đề thi"
+                                variant="outlined"
+                                error={!validInput.contestSessionExam}
+                                helperText={!validInput.contestSessionExam ? "Bạn phải chọn đề thi" : ""}
+
+                            />}
+                    />
+                    {/* <TextField
                         inputRef={contestSessionQuestionInputRef}
                         margin="dense"
                         label="Số câu hỏi"
@@ -160,7 +161,7 @@ export default function ContestSessionFormDialog() {
                         required={true}
                         error={!isValidInput.total_score}
                         helperText={isValidInput.total_score ? "" : "Dữ liệu phải là số và không được để trống"}
-                    />
+                    /> */}
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">

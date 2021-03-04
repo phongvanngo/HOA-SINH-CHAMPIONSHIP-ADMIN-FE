@@ -24,7 +24,8 @@ const FakeContestSession = JSON.parse(`
   "name": "Pail",
   "exam_id": 5,
   "is_active": true
-}]
+}
+]
 `)
 
 export default FakeContestSession;

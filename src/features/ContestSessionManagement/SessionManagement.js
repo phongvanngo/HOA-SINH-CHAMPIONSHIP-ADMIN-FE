@@ -1,12 +1,18 @@
-import React from 'react';
-import ListExam from './View/ListSession';
-import ExamFormDialog from './View/SessionFormDialog';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import ListContestSession from './View/ListSession';
+import ContestSessionFormDialog from './View/SessionFormDialog';
+import { fetchExamRequest } from './../examManagement/ExamSlice';
 
 export default function ContestSessionManagement() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(fetchExamRequest({}));
+    }, [])
     return (
         <div>
-            <ExamFormDialog />
-            <ListExam />
+            <ContestSessionFormDialog />
+            <ListContestSession />
         </div>
     )
 }
