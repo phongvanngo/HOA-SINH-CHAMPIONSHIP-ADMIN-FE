@@ -5,7 +5,6 @@ import { DashboardRoutes } from "./../../../../routes.const";
 const ExamManagement = lazy(() => import('./../../../../features/examManagement/ExamManagement'));
 const QuestionManagement = lazy(() => import('./../../../../features/questionManagement/QuestionManagement'));
 const UserManagement = lazy(() => import('./../../../../features/userManagement/UserManagement'));
-const CompetitionManagement = lazy(() => import('./../../../../features/competitionManagement/CompetitionManagement'));
 const ContestSessionManagement = lazy(() => import('../../../../features/ContestSessionManagement/SessionManagement'));
 
 

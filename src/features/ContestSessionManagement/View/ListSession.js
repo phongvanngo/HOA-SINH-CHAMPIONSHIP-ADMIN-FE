@@ -1,15 +1,12 @@
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
-import List from '@material-ui/core/List';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AddToPhotosIcon from '@material-ui/icons/AddToPhotos';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { activeContestSessionRequest, deactiveContestSessionRequest, createContestSession, deleteContestSessionRequest, editContestSession, fetchContestSessionRequest } from '../ContestSessionSlice';
+import { activeContestSessionRequest, createContestSession, deactiveContestSessionRequest, deleteContestSessionRequest, editContestSession, fetchContestSessionRequest } from '../ContestSessionSlice';
 import ContestSessionItem from './SessionItem';
-import { useHistory } from 'react-router-dom';
-import { DashboardRoutes } from '../../../routes.const';
 
 const useStyles = makeStyles((theme) => ({
     root: {

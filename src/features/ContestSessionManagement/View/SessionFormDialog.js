@@ -103,7 +103,7 @@ export default function ContestSessionFormDialog() {
         <div>
             <Dialog open={isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">
-                    {contestSession ? 'Chỉnh sửa đề thi' : 'Tạo mới ca thi'}
+                    {contestSession ? 'Chỉnh sửa ca thi' : 'Tạo mới ca thi'}
                 </DialogTitle>
                 <DialogContent>
                     {/* <DialogContentText>

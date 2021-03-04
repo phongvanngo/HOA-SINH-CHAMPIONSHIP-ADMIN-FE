@@ -1,25 +1,18 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import clsx from 'clsx';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
 import { red } from '@material-ui/core/colors';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
+import { makeStyles } from '@material-ui/core/styles';
+import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import Switch from '@material-ui/core/Switch';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import './SessionItem.css';
-import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,15 +48,14 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RecipeReviewCard(props) {
     const classes = useStyles();
-    const dispatch = useDispatch();
     let listExams = useSelector(state => state.exam.listExams)
 
-    let { detailedContestSession, handleToggleContestSession, handleDeleteContestSession, handleEditContestSession, handleOpenContestSession } = props;
+    let { detailedContestSession, handleToggleContestSession, handleDeleteContestSession, handleEditContestSession } = props;
+    const { id, name, exam_id, is_active } = detailedContestSession;
 
-    let index = listExams.findIndex((exam) => exam.id === detailedContestSession.exam_id);
+    let index = listExams.findIndex((exam) => exam.id === exam_id);
     let exam_name = index > -1 ? listExams[index].exam_name : "";
 
-    const { id, name, exam_id, is_active } = detailedContestSession;
 
 
 

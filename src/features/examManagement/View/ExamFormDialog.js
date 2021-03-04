@@ -1,14 +1,12 @@
-import React, { useRef, useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from '@material-ui/core/TextField';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeExamFormDialog } from './../ExamSlice';
-import { createExamRequest, updateExamRequest } from './../ExamSlice';
+import { closeExamFormDialog, createExamRequest, updateExamRequest } from './../ExamSlice';
 
 export default function ExamFormDialog() {
     const dispatch = useDispatch();

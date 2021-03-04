@@ -60,7 +60,7 @@ export const createQuestionRequest = createAsyncThunk(
     'question/createQuestionStatus',
     async (questionInfo, thunkApi) => {
         console.log(questionInfo);
-        const { dispatch, getState } = thunkApi;
+        const { dispatch } = thunkApi;
 
         try {
             dispatch(startLoading());

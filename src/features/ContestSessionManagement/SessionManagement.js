@@ -8,7 +8,7 @@ export default function ContestSessionManagement() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(fetchExamRequest({}));
-    }, [])
+    }, [dispatch])
     return (
         <div>
             <ContestSessionFormDialog />

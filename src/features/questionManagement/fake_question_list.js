@@ -671,7 +671,7 @@ const fake_question_list = JSON.parse(`
 const list_question = (exam_id) => {
   let list = [];
   fake_question_list.map((question) => {
-    if (question.exam_id !== Number(exam_id)) return;
+    if (question.exam_id !== Number(exam_id)) return null;
     let correctAnswer;
     switch (question.correctAnswer) {
       case 0:
@@ -695,6 +695,7 @@ const list_question = (exam_id) => {
       ...question,
       correctAnswer: correctAnswer,
     })
+    return null;
   });
   return list;
 };
