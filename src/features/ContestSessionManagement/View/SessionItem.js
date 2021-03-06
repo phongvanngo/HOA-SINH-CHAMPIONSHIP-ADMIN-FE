@@ -51,14 +51,12 @@ export default function RecipeReviewCard(props) {
     let listExams = useSelector(state => state.exam.listExams)
 
     let { detailedContestSession, handleToggleContestSession, handleDeleteContestSession, handleEditContestSession } = props;
-    const { id, name, exam_id, is_active } = detailedContestSession;
+    const { id, name, exam_id, is_active, type } = detailedContestSession;
+
+    console.log(type);
 
     let index = listExams.findIndex((exam) => exam.id === exam_id);
     let exam_name = index > -1 ? listExams[index].exam_name : "";
-
-
-
-
 
     const AvatarActive = () => {
         return (
@@ -85,6 +83,9 @@ export default function RecipeReviewCard(props) {
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
                     {`Tên đề: ${exam_name}`}
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                    {`${type === 1 ? "Bảng cá nhân" : "Bảng đội"}`}
                 </Typography>
             </CardContent>
             <CardActions disableSpacing>

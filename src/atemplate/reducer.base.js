@@ -1,16 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { notify } from './../../common/component/Notifier/notifierSlice';
-import { questionApi } from './questionApi';
+import { userApi } from './UserApi';
 import { startLoading, stopLoading } from './../../common/component/PageLoader/loadingSlice';
 
-export const fetchQuestionRequest = createAsyncThunk(
-    'question/fetchQuestionStatus',
+export const fetchUserRequest = createAsyncThunk(
+    'user/fetchUserStatus',
     async ({ }, thunkApi) => {
         //nếu không có tham số thứ nhất thì ko dispatch được ?????
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            let response = await questionApi.getQuestionData();
+            let response = await userApi.getUserData();
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
@@ -31,19 +31,19 @@ export const fetchQuestionRequest = createAsyncThunk(
     }
 );
 
-export const createQuestionRequest = createAsyncThunk(
-    'question/createQuestionStatus',
-    async (questionInfo, thunkApi) => {
+export const createUserRequest = createAsyncThunk(
+    'user/createUserStatus',
+    async (userInfo, thunkApi) => {
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await questionApi.pushNewQuestion(questionInfo);
+            const response = await userApi.pushNewUser(userInfo);
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Thêm đề thi thành công", options: { variant: 'success' } }));
                     dispatch(stopLoading());
-                    return { data: response.data, questionInfo };
+                    return { data: response.data, userInfo };
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -55,19 +55,19 @@ export const createQuestionRequest = createAsyncThunk(
         }
     });
 
-export const updateQuestionRequest = createAsyncThunk(
-    'question/editQuestionStatus',
-    async (questionInfo, thunkApi) => {
+export const updateUserRequest = createAsyncThunk(
+    'user/editUserStatus',
+    async (userInfo, thunkApi) => {
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await questionApi.patchQuestionInfo(questionInfo);
+            const response = await userApi.patchUserInfo(userInfo);
             dispatch(stopLoading());
 
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Sửa đề thi thành công", options: { variant: 'success' } }));
-                    return { data: response.data, questionInfo };
+                    return { data: response.data, userInfo };
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -79,19 +79,19 @@ export const updateQuestionRequest = createAsyncThunk(
         }
     });
 
-export const deleteQuestionRequest = createAsyncThunk(
-    'question/deleteQuestionStatus',
-    async (question_id, thunkApi) => {
+export const deleteUserRequest = createAsyncThunk(
+    'user/deleteUserStatus',
+    async (user_id, thunkApi) => {
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await questionApi.deleteQuestion(question_id);
+            const response = await userApi.deleteUser(user_id);
             dispatch(stopLoading());
 
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Xóa đề thi thành công", options: { variant: 'success' } }));
-                    return question_id;
+                    return user_id;
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -103,88 +103,88 @@ export const deleteQuestionRequest = createAsyncThunk(
         }
     });
 
-export const questionSlice = createSlice({
-    name: 'question',
+export const userSlice = createSlice({
+    name: 'user',
     initialState: {
-        listQuestions: [],
-        questionEditing: null
+        listUsers: [],
+        userEditing: null
         // {
         //     id: null,
-        //     question_name: "abc",
-        //     question: 12,
+        //     user_name: "abc",
+        //     user: 12,
         //     total_score: 123,
         // }
     },
 
     reducers: {
-        closeQuestionFormDialog: state => {
-            state.questionEditing = null;
+        closeUserFormDialog: state => {
+            state.userEditing = null;
         },
 
-        createQuestion: (state) => {
-            state.questionEditing = null;
+        createUser: (state) => {
+            state.userEditing = null;
         },
 
-        editQuestion: (state, action) => {
-            const questionInfo = action.payload;
-            state.questionEditing = questionInfo;
+        editUser: (state, action) => {
+            const userInfo = action.payload;
+            state.userEditing = userInfo;
         }
     },
 
     extraReducers: {
-        [fetchQuestionRequest.fulfilled]: (state, action) => {
+        [fetchUserRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
             if (response_data === null) return;
-            let questions = response_data;
-            state.listQuestions = [...questions];
+            let users = response_data;
+            state.listUsers = [...users];
 
         },
-        [createQuestionRequest.fulfilled]: (state, action) => {
+        [createUserRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
             if (response_data === null) return;
 
-            const { data, questionInfo } = response_data;
+            const { data, userInfo } = response_data;
             const { id } = data;
-            const newListQuestions = [
-                ...state.listQuestions,
+            const newListUsers = [
+                ...state.listUsers,
                 {
-                    ...questionInfo,
-                    available_question: 0,
+                    ...userInfo,
+                    available_user: 0,
                     id: id
                 }
             ]
-            state.listQuestions = newListQuestions;
+            state.listUsers = newListUsers;
         },
-        [updateQuestionRequest.fulfilled]: (state, action) => {
+        [updateUserRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
             if (response_data === null) return;
 
-            const { questionInfo } = response_data;
-            console.log(questionInfo);
-            const newListQuestions = state.listQuestions.map((question) => {
-                if (question.id === questionInfo.id)
+            const { userInfo } = response_data;
+            console.log(userInfo);
+            const newListUsers = state.listUsers.map((user) => {
+                if (user.id === userInfo.id)
                     return {
-                        ...question,
-                        ...questionInfo
+                        ...user,
+                        ...userInfo
                     }
                 else
-                    return { ...question };
+                    return { ...user };
             })
 
-            state.listQuestions = newListQuestions;
+            state.listUsers = newListUsers;
         },
-        [deleteQuestionRequest.fulfilled]: (state, action) => {
+        [deleteUserRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
             if (response_data === null) return;
-            const question_id = response_data;
+            const user_id = response_data;
 
-            const newListQuestions = state.listQuestions.filter((question) => question.id !== question_id);
+            const newListUsers = state.listUsers.filter((user) => user.id !== user_id);
 
-            state.listQuestions = newListQuestions;
+            state.listUsers = newListUsers;
         }
     }
 })
 
-export const { closeQuestionFormDialog, createQuestion, editQuestion } = questionSlice.actions;
+export const { closeUserFormDialog, createUser, editUser } = userSlice.actions;
 
-export default questionSlice.reducer;
+export default userSlice.reducer;

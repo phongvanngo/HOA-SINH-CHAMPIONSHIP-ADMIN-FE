@@ -15,19 +15,34 @@ export default function ContestSessionFormDialog() {
     let listExams = useSelector(state => state.exam.listExams)
     const dispatch = useDispatch();
 
-    const { id, name, exam_id } = contestSession || {};
+    const { id, name, exam_id, type } = contestSession || {};
+
 
     const contestSessionNameInputRef = useRef(null);
 
+    const listTypes = [
+        {
+            id: 1,
+            name: "Bảng cá nhân"
+        },
+        {
+            id: 2,
+            name: "Bảng đội"
+        }
+    ]
 
     const inititalValidInput = {
         contestSessionName: true,
         contestSessionExam: true,
+        competitionType: true,
     }
     const [validInput, setValidInput] = useState(inititalValidInput);
 
     const [chosenExam, setChosenExam] = useState(listExams[0]);
+    const [chosenType, setChosenType] = useState(listTypes[0]);
     const [flag, setFlag] = useState(0);
+
+    console.log("genre", type);
 
 
     useEffect(() => {
@@ -36,6 +51,8 @@ export default function ContestSessionFormDialog() {
             //nếu sửa ca thi, setFlag để render lại và lấy ref của input
             if (contestSession !== null) {
                 setFlag(flag + 1);
+                const currentType = listTypes.find(element => element.id === type)
+                setChosenType(currentType);
             }
         } else {
             setValidInput(inititalValidInput);
@@ -55,7 +72,7 @@ export default function ContestSessionFormDialog() {
     const CheckValidInput = (dataSubmit) => {
         let valid = true;
         let validInputDetail = inititalValidInput;
-        const { exam_id, name } = dataSubmit;
+        const { exam_id, name, type } = dataSubmit;
 
 
         if (name.trim() === "") {
@@ -66,6 +83,10 @@ export default function ContestSessionFormDialog() {
         if (exam_id === null) {
             valid = false;
             validInputDetail.contestSessionExam = false;
+        }
+        if (type === null) {
+            valid = false;
+            validInputDetail.competitionType = false;
         }
 
         if (valid === false) {
@@ -85,14 +106,16 @@ export default function ContestSessionFormDialog() {
             id: id,
             exam_id: chosenExam ? chosenExam.id : null,
             name: contestSessionNameInputRef.current.value,
+            type: chosenType ? chosenType.id : null,
         }
 
         if (CheckValidInput(dataSubmit) === true) {
-            if (contestSession === null) {
+            if (contestSession === null)
                 dispatch(createContestSessionRequest(dataSubmit));
-            }
             else
                 dispatch(updateContestSessionRequest(dataSubmit));
+
+            dispatch(closeContestSessionFormDialog());
         }
     }
 
@@ -124,12 +147,10 @@ export default function ContestSessionFormDialog() {
                     />
                     <Autocomplete
                         defaultValue={listExams.find(exam => exam.id === exam_id)}
-                        id="combo-box-demo"
                         options={listExams}
                         value={chosenExam}
                         getOptionLabel={(option) => option.exam_name}
                         onChange={(event, newValue) => {
-                            console.log(newValue);
                             setChosenExam(newValue)
                         }}
                         style={{ width: 300 }}
@@ -139,6 +160,23 @@ export default function ContestSessionFormDialog() {
                                 variant="outlined"
                                 error={!validInput.contestSessionExam}
                                 helperText={!validInput.contestSessionExam ? "Bạn phải chọn đề thi" : ""}
+
+                            />}
+                    />
+                    <Autocomplete
+                        options={listTypes}
+                        value={chosenType}
+                        getOptionLabel={(option) => option.name}
+                        onChange={(event, newValue) => {
+                            setChosenType(newValue)
+                        }}
+                        style={{ width: 300, marginTop: '20px' }}
+                        renderInput={(params) =>
+                            <TextField {...params}
+                                label="Bảng thi đấu"
+                                variant="outlined"
+                                error={!validInput.competitionType}
+                                helperText={!validInput.contestSessionExam ? "Bạn phải chọn bảng thi đấu" : ""}
 
                             />}
                     />

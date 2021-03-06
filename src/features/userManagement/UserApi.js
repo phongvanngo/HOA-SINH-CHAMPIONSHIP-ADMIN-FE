@@ -1,13 +1,14 @@
-import fake_exam_list from './fake_exam_data';
+import { user_fake_data } from './user_fake_data';
 import { fakeApi } from './../../app/fakeApi';
 
-export const examApi = {
-    getExamData: async () => {
+export const userApi = {
+    getUserData: async (data) => {
+        const { page, pageSize, sessionID } = data;
         let response = await fakeApi({
-            request: null,
+            request: data,
             response: {
                 status: 200,
-                data: fake_exam_list
+                data: user_fake_data({ page: page, pageSize: pageSize, sessionID: sessionID })
             },
             timeOut: 1000
         })
@@ -16,9 +17,9 @@ export const examApi = {
 
     },
 
-    pushNewExam: async (examInfo) => {
+    pushNewUser: async (userInfo) => {
         const response = await fakeApi({
-            request: examInfo,
+            request: userInfo,
             response:
             {
                 status: 200,
@@ -28,9 +29,9 @@ export const examApi = {
         return response;
     },
 
-    patchExamInfo: async (examInfo) => {
+    patchUserInfo: async (userInfo) => {
         const response = await fakeApi({
-            request: examInfo,
+            request: userInfo,
             response:
             {
                 status: 200,
@@ -40,7 +41,7 @@ export const examApi = {
         return response;
     },
 
-    deleteExam: async (question_id) => {
+    deleteUser: async (question_id) => {
         const response = await fakeApi({
             request: question_id,
             response:

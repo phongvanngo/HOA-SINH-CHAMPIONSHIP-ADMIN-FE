@@ -1,3 +1,4 @@
+import { Paper } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,7 +28,12 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
             opacity: 1
         }
-    }
+    },
+    paper: {
+        padding: theme.spacing(2),
+        color: theme.palette.text.secondary,
+        marginBottom: '10px',
+    },
 }));
 
 export default function InteractiveList() {
@@ -35,6 +41,8 @@ export default function InteractiveList() {
     const dispatch = useDispatch();
 
     const contestSessions = useSelector(state => state.contestSession.listContestSessions);
+
+    console.log(contestSessions);
 
     React.useEffect(() => {
         console.log("fetch data");
@@ -81,7 +89,41 @@ export default function InteractiveList() {
                             <AddToPhotosIcon />
                         </IconButton>
                     </Typography>
-                    <div className={classes.demo}>
+
+                    <Paper className={classes.paper}>
+                        <h3>Bảng cá nhân</h3>
+                        <div className={classes.demo}>
+                            {contestSessions.map((contestSession, index) =>
+                            (contestSession.type === 1 ?
+                                <ContestSessionItem
+                                    key={index}
+                                    detailedContestSession={contestSession}
+                                    handleDeleteContestSession={handleDeleteContestSession}
+                                    handleEditContestSession={handleEditContestSession}
+                                    handleOpenContestSession={handleOpenContestSession}
+                                    handleToggleContestSession={handleToggleContestSession}
+                                /> : ""))
+                            }
+                        </div>
+                    </Paper>
+
+                    <Paper className={classes.paper}>
+                        <h3>Bảng đội</h3>
+                        <div className={classes.demo}>
+                            {contestSessions.map((contestSession, index) =>
+                            (contestSession.type === 2 ?
+                                <ContestSessionItem
+                                    key={index}
+                                    detailedContestSession={contestSession}
+                                    handleDeleteContestSession={handleDeleteContestSession}
+                                    handleEditContestSession={handleEditContestSession}
+                                    handleOpenContestSession={handleOpenContestSession}
+                                    handleToggleContestSession={handleToggleContestSession}
+                                /> : ""))
+                            }
+                        </div>
+                    </Paper>
+                    {/* 
                         {contestSessions.map((contestSession, index) =>
                             <ContestSessionItem
                                 key={index}
@@ -90,8 +132,8 @@ export default function InteractiveList() {
                                 handleEditContestSession={handleEditContestSession}
                                 handleOpenContestSession={handleOpenContestSession}
                                 handleToggleContestSession={handleToggleContestSession}
-                            />)}
-                        {/* <List>
+                            />)} */}
+                    {/* <List>
                         </List>
                         <List >
                             {contestSessions.map((contestSession, index) =>
@@ -103,9 +145,8 @@ export default function InteractiveList() {
                                     handleOpenContestSession={handleOpenContestSession}
                                 />)}
                         </List> */}
-                    </div>
                 </Grid>
             </Grid>
-        </div>
+        </div >
     );
 }

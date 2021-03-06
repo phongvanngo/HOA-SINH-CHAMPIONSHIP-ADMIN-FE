@@ -36,8 +36,8 @@ export const notifierSlice = createSlice({
                     options: {
                         variant: 'default',
                         key: newKey,
-                        autoHideDuration: 2000,
-                        anchorOrigin: { horizontal: 'center', vertical: 'bottom' },
+                        autoHideDuration: 1000,
+                        anchorOrigin: { horizontal: 'left', vertical: 'bottom' },
                         ...options,
                     },
                 }
