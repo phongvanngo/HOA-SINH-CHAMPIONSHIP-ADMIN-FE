@@ -39,33 +39,37 @@ const useStyles = makeStyles((theme) => ({
 export default function CenteredGrid() {
     const classes = useStyles();
     const dispatch = useDispatch();
-    let listContestSessions = useSelector(state => state.contestSession.listContestSessions) || [];
+    // let listContestSessions = useSelector(state => state.contestSession.listContestSessions) || [];
+    let listUniversities = useSelector(state => state.university.listUniversitys);
+
+    listUniversities = [ {id:null,university_name:"Thí sinh tự do"},...listUniversities]
 
     const userNameInputRef = useRef(null)
     const prefixInputRef = useRef(null)
 
     const inititalValidInput = {
         userName: true,
-        sessionID: true
+        universityId:true,
     }
 
     const [validInput, setValidInput] = useState(inititalValidInput);
-    const [choosenSessionID, setChosenSessionID] = useState(null);
+    // const [choosenSessionID, setChosenSessionID] = useState(null);
+    const [chosenUniversityId, setChosenUniversityId] = useState(null);
 
     const checkValidInput = (dataSubmit) => {
         let valid = true;
         let validInputDetail = inititalValidInput;
-        const { name, sessionID } = dataSubmit;
+        const { name, universityId } = dataSubmit;
 
 
         if (name.trim() === "") {
             valid = false;
             validInputDetail.userName = false;
         }
-        if (sessionID === null) {
-            valid = false;
-            validInputDetail.sessionID = false;
-        }
+        // if (universityId === null) {
+        //     valid = false;
+        //     validInputDetail.universityId = false;
+        // }
 
 
         if (valid === false) {
@@ -76,10 +80,8 @@ export default function CenteredGrid() {
             return true;
     }
 
-
-    const handleChangeSession = (event, newValue) => {
-        setChosenSessionID(newValue);
-
+    const handleChangeUniversity = (event, newValue) => {
+        setChosenUniversityId(newValue);
     }
 
 
@@ -89,7 +91,8 @@ export default function CenteredGrid() {
         const userInfo = {
             name: userNameInputRef.current.value,
             code: `${prefixInputRef.current.value}${shortid}`,
-            sessionID: choosenSessionID ? choosenSessionID.id : null
+            // sessionID: choosenSessionID ? choosenSessionID.id : null,
+            universityId:chosenUniversityId ? chosenUniversityId.id : null
         }
 
         if (checkValidInput(userInfo) === false) return;
@@ -120,6 +123,8 @@ export default function CenteredGrid() {
                 <Divider />
                 <FormControl component="fieldset" style={{ marginTop: '10px', width: '100%' }}>
                     <TextField
+                        size="small"
+
                         inputRef={userNameInputRef}
                         id="outlined-basic"
                         style={{ marginTop: '10px', width: '100%' }}
@@ -130,12 +135,14 @@ export default function CenteredGrid() {
 
                     />
                     <TextField
+                        size="small"
+
                         inputRef={prefixInputRef}
                         id="outlined-basic"
                         style={{ marginTop: '10px' }}
                         variant="outlined"
                         label="Tiền tố" />
-                    <Autocomplete
+                    {/* <Autocomplete
                         options={listContestSessions}
                         onChange={handleChangeSession}
                         getOptionLabel={(option) => option.name}
@@ -143,10 +150,24 @@ export default function CenteredGrid() {
                         renderInput=
                         {(params) =>
                             <TextField {...params}
+                                size="small"
                                 variant="outlined"
                                 label="Ca thi"
                                 error={!validInput.sessionID}
                                 helperText={!validInput.sessionID ? "Phải chọn ca thi" : ""}
+                            />}
+                    /> */}
+                    <Autocomplete
+                        options={listUniversities}
+                        onChange={handleChangeUniversity}
+                        getOptionLabel={(option) => option.university_name}
+                        style={{ width: '100%', marginTop: '10px' }}
+                        renderInput=
+                        {(params) =>
+                            <TextField {...params}
+                                size="small"
+                                variant="outlined"
+                                label="Trường đại học"
                             />}
                     />
                 </FormControl>

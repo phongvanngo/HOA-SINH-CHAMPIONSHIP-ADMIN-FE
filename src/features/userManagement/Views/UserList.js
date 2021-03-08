@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
+import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableFooter from '@material-ui/core/TableFooter';
@@ -16,7 +19,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import TableHead from '@material-ui/core/TableHead';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUserRequest } from '../UserSlice';
+import { fetchUserRequest,changeSession } from '../UserSlice';
 import UserItem from './UserItem';
 
 const useStyles1 = makeStyles((theme) => ({
@@ -125,7 +128,9 @@ export default function CustomPaginationActionsTable() {
                         <TableCell style={{ width: '5%' }} align="center" ></TableCell>
                         <TableCell style={{ width: '20%' }} align="center">Mã dự thi</TableCell>
                         <TableCell style={{ width: '25%' }} align="center">Tên thí sinh (tên đội)</TableCell>
-                        <TableCell style={{ width: '15%' }} align="center">Tên ca thi</TableCell>
+                        <TableCell style={{ width: '15%' }} align="center">
+Tên ca thi
+                        </TableCell>
                         <TableCell style={{ width: '15%' }} align="center">Điểm</TableCell>
                         <TableCell style={{ width: '15%' }} align="center">Thời gian</TableCell>
                         <TableCell style={{ width: '5%' }} align="center"></TableCell>

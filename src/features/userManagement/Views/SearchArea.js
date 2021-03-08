@@ -51,6 +51,8 @@ export default function SearhArea() {
                 <Divider />
                 <FormControl component="fieldset" style={{ marginTop: '10px', width: '100%' }}>
                     <TextField
+                        size="small"
+
                         id="outlined-basic"
                         style={{ marginTop: '10px' }}
                         variant="outlined" label="Mã dự thi" />

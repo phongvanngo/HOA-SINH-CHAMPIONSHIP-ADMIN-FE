@@ -17,4 +17,9 @@ export const SidebarOption = [
         path: DashboardRoutes.USER_MANAGEMENT,
         icon: () => <MailIcon />
     },
+    {
+        title: "Trường đại học",
+        path: DashboardRoutes.UNIVERSITY_MANAGEMENT,
+        icon: () => <MailIcon />
+    },
 ]

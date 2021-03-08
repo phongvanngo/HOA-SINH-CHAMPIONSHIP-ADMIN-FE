@@ -142,6 +142,7 @@ export default function ExamFormDialog() {
                         helperText={isValidInput.exam_name ? "" : "Dữ liệu còn trống"}
                     />
                     <TextField
+
                         inputRef={examQuestionInputRef}
                         margin="dense"
                         label="Số câu hỏi"

@@ -156,6 +156,7 @@ export default function ContestSessionFormDialog() {
                         style={{ width: 300 }}
                         renderInput={(params) =>
                             <TextField {...params}
+                                size="small"
                                 label="Đề thi"
                                 variant="outlined"
                                 error={!validInput.contestSessionExam}
@@ -173,6 +174,7 @@ export default function ContestSessionFormDialog() {
                         style={{ width: 300, marginTop: '20px' }}
                         renderInput={(params) =>
                             <TextField {...params}
+                                size="small"
                                 label="Bảng thi đấu"
                                 variant="outlined"
                                 error={!validInput.competitionType}

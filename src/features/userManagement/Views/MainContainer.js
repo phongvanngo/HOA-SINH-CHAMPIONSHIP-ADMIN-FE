@@ -10,6 +10,8 @@ import FilterArea from './FilterArea';
 import UserList from './UserList';
 import SearchArea from './SearchArea';
 import { fetchContestSessionRequest } from './../../ContestSessionManagement/ContestSessionSlice';
+import { fetchUniversityRequest} from './../../universityManagement/UniversitySlice';
+
 
 export default function QuestionManagement() {
     const dispatch = useDispatch();
@@ -17,6 +19,7 @@ export default function QuestionManagement() {
 
     useEffect(() => {
         dispatch(fetchContestSessionRequest({}));
+        dispatch(fetchUniversityRequest({}));
     }, [])
 
 

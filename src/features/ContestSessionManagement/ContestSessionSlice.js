@@ -14,7 +14,7 @@ export const fetchContestSessionRequest = createAsyncThunk(
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
-                    dispatch(notify({ message: "Lấy dữ liệu thành công", options: { variant: 'success' } }));
+                    dispatch(notify({ message: "Lấy dữ liệu ca thi thành công", options: { variant: 'success' } }));
                     return response.data;
                 case 404:
                     throw new Error("Unauthorized");

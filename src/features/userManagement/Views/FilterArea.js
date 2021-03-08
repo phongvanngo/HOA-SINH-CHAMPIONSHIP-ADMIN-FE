@@ -52,7 +52,7 @@ export default function CenteredGrid() {
                         onChange={handleChangeSession}
                         getOptionLabel={(option) => option.name}
                         style={{ width: '100%', marginTop: '10px' }}
-                        renderInput={(params) => <TextField {...params} variant="outlined" label="Ca thi" />}
+                        renderInput={(params) => <TextField size="small" {...params} variant="outlined" label="Ca thi" />}
                     />
                 </FormControl>
             </Paper>

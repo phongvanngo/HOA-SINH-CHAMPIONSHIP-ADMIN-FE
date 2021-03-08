@@ -7,6 +7,7 @@ import notifierReducer from './../common/component/Notifier/notifierSlice';
 import questionReducer from './../features/questionManagement/questionSlice';
 import contestSessionReducer from '../features/ContestSessionManagement/ContestSessionSlice';
 import userReducer from './../features/userManagement/UserSlice';
+import universityReducer from './../features/universityManagement/UniversitySlice';
 export default configureStore({
   reducer: {
     counter: counterReducer,
@@ -17,5 +18,6 @@ export default configureStore({
     question: questionReducer,
     contestSession: contestSessionReducer,
     user: userReducer,
+    university: universityReducer,
   },
 });

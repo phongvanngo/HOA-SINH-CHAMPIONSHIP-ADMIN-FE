@@ -34,14 +34,15 @@ export const fetchUserRequest = createAsyncThunk(
 export const createUserRequest = createAsyncThunk(
     'user/createUserStatus',
     async (userInfo, thunkApi) => {
-        const { dispatch } = thunkApi;
+        const { dispatch,getState } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await userApi.pushNewUser(userInfo);
+            const currentSessionId = getState().user.currentSessionID;
+            const response = await userApi.pushNewUser({...userInfo,sessionID:currentSessionId});
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
-                    dispatch(notify({ message: "Lấy dữ liệu thành công", options: { variant: 'success' } }));
+                    dispatch(notify({ message: "Tạo thí sinh thành công", options: { variant: 'success' } }));
                     dispatch(stopLoading());
                     return { data: response.data, userInfo };
                 default:
