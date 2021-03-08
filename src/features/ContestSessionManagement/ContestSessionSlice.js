@@ -37,7 +37,16 @@ export const createContestSessionRequest = createAsyncThunk(
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await contestSessionApi.pushNewContestSession(contestSessionInfo);
+            
+            //transfer schema
+            const {exam_id,name,type} = contestSessionInfo;
+            const newContestSession =  {
+                typeId : type,
+                examId:exam_id,
+                name:name,
+            }
+            
+            const response = await contestSessionApi.pushNewContestSession(newContestSession);
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
@@ -61,7 +70,14 @@ export const updateContestSessionRequest = createAsyncThunk(
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await contestSessionApi.patchContestSessionInfo(contestSessionInfo);
+            
+            const {exam_id,name,id} = contestSessionInfo;
+            const newContestSession =  {
+                examId:exam_id,
+                name:name,
+            }
+            
+            const response = await contestSessionApi.patchContestSessionInfo(newContestSession,id);
             dispatch(stopLoading());
 
             switch (response.status) {
@@ -117,6 +133,8 @@ export const activeContestSessionRequest = createAsyncThunk(
                 case 200:
                     dispatch(notify({ message: "Mở ca thi thành công", options: { variant: 'success' } }));
                     return contest_session_id;
+                case 401:
+                    throw new Error("Đề thi chưa hoàn thành");
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -140,6 +158,8 @@ export const deactiveContestSessionRequest = createAsyncThunk(
                 case 200:
                     dispatch(notify({ message: "Đóng ca thi thành công", options: { variant: 'success' } }));
                     return contest_session_id;
+                case 401:
+                    throw new Error("Đề thi chưa hoàn thành");
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -193,7 +213,16 @@ export const contestSessionSlice = createSlice({
         [fetchContestSessionRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
             if (response_data === null) return;
-            let contestSessions = response_data;
+            let contestSessions = response_data.rows.map(element=>{
+                const {id,name,isActive,examId,typeId} = element;
+                return {
+                    id:id,
+                    name:name,
+                    is_active:isActive,
+                    type:typeId,
+                    exam_id:examId
+                }
+            });
             state.listContestSessions = [...contestSessions];
 
         },
