@@ -101,7 +101,9 @@ export default function CustomPaginationActionsTable() {
 
     const totalUsers = useSelector(state => state.user.totalUsers)
     const currentSessionID = useSelector(state => state.user.currentSessionID);
-    const listUsers = useSelector(state => state.user.listUsers);
+    let listUsers = useSelector(state => state.user.listUsers);
+
+    listUsers = listUsers.slice(0,rowsPerPage);
 
     useEffect(() => {
         dispatch(fetchUserRequest({ page: page, pageSize: rowsPerPage !== -1 ? rowsPerPage : totalUsers, sessionID: currentSessionID }));
@@ -117,8 +119,6 @@ export default function CustomPaginationActionsTable() {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    console.log(rowsPerPage, page);
 
     return (
         <TableContainer component={Paper}>

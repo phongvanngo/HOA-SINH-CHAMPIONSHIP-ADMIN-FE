@@ -36,6 +36,14 @@ export default function CenteredGrid() {
     const dispatch = useDispatch();
     let listContestSessions = useSelector(state => state.contestSession.listContestSessions) || [];
 
+    listContestSessions = [
+        ...listContestSessions, 
+        {
+            id:null,
+            name:'Tất cả ca thi'
+        }]
+    
+    
     const handleChangeSession = (event, newValue) => {
         if (newValue !== null) dispatch(changeSession(newValue.id));
     }

@@ -87,7 +87,7 @@ export default function CenteredGrid() {
 
 
     const handleSubmit = () => {
-        const shortid = Math.random().toString(36).substr(2, 5);
+        const shortid = Math.random().toString(36).substr(2, 9);
         const userInfo = {
             name: userNameInputRef.current.value,
             code: `${prefixInputRef.current.value}${shortid}`,
