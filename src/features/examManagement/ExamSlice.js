@@ -11,12 +11,13 @@ export const fetchExamRequest = createAsyncThunk(
         try {
             dispatch(startLoading());
             let response = await examApi.getExamData();
+
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Lấy dữ liệu thành công", options: { variant: 'success' } }));
                     return response.data;
-                case 404:
+                case 401:
                     throw new Error("Unauthorized");
                 default:
                     throw new Error("Unsuccessfully");
@@ -37,7 +38,12 @@ export const createExamRequest = createAsyncThunk(
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await examApi.pushNewExam(examInfo);
+
+            //transfer schema
+            const {exam_name,question,total_score} = examInfo;
+            const newExam ={name:exam_name,totalQuestionUserMustDo:question,maxScore:total_score};
+
+            const response = await examApi.pushNewExam(newExam);
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
@@ -49,6 +55,7 @@ export const createExamRequest = createAsyncThunk(
             }
 
         } catch (error) {
+            console.log(error);
             dispatch(notify({ message: `${error}`, options: { variant: 'error' } }));
             dispatch(stopLoading());
             return null;
@@ -61,7 +68,12 @@ export const updateExamRequest = createAsyncThunk(
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await examApi.patchExamInfo(examInfo);
+
+             //transfer schema
+            const {id,exam_name,question,total_score} = examInfo;
+            const newExam ={name:exam_name,totalQuestionUserMustDo:question,maxScore:total_score};
+
+            const response = await examApi.patchExamInfo(newExam,id);
             dispatch(stopLoading());
 
             switch (response.status) {
@@ -81,17 +93,17 @@ export const updateExamRequest = createAsyncThunk(
 
 export const deleteExamRequest = createAsyncThunk(
     'exam/deleteExamStatus',
-    async (question_id, thunkApi) => {
+    async (exam_id, thunkApi) => {
         const { dispatch } = thunkApi;
         try {
             dispatch(startLoading());
-            const response = await examApi.deleteExam(question_id);
+            const response = await examApi.deleteExam(exam_id);
             dispatch(stopLoading());
 
             switch (response.status) {
                 case 200:
                     dispatch(notify({ message: "Xóa đề thi thành công", options: { variant: 'success' } }));
-                    return question_id;
+                    return exam_id;
                 default:
                     throw new Error("Lỗi kết nối");
             }
@@ -145,8 +157,22 @@ export const examSlice = createSlice({
     extraReducers: {
         [fetchExamRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
+            console.log(response_data);
             if (response_data === null) return;
-            let exams = response_data;
+
+            //chuyển đổi schema
+            let exams = response_data.rows.map((element)=>{
+                const {id,name,maxScore,totalQuestionUserMustDo,countQuestion} =  element;
+                return {
+                    id:id,
+                    exam_name:name,
+                    question: totalQuestionUserMustDo,
+                    total_score:maxScore,
+                    available_question:countQuestion
+                }    
+            }
+            )
+
             state.listExams = [...exams];
 
         },
@@ -155,6 +181,7 @@ export const examSlice = createSlice({
             if (response_data === null) return;
 
             const { data, examInfo } = response_data;
+            console.log(response_data);
             const { id } = data;
             const newListExams = [
                 ...state.listExams,
@@ -187,9 +214,9 @@ export const examSlice = createSlice({
         [deleteExamRequest.fulfilled]: (state, action) => {
             const response_data = action.payload;
             if (response_data === null) return;
-            const question_id = response_data;
+            const exam_id = response_data;
 
-            const newListExams = state.listExams.filter((exam) => exam.id !== question_id);
+            const newListExams = state.listExams.filter((exam) => exam.id !== exam_id);
 
             state.listExams = newListExams;
         }

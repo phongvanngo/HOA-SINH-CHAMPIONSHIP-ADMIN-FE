@@ -15,8 +15,10 @@ export const loginRequest = createAsyncThunk(
                     dispatch(notify({ message: "Đăng nhập thành công", options: { variant: 'success' } }));
                     dispatch(stopLoading());
                     return response.data;
-                case 404:
+                case 401:
                     throw new Error("Sai tên đăng nhập hoặc mật khẩu");
+                case 400:
+                    throw new Error("Chưa nhập tên đăng nhập và mật khẩu");
                 default:
                     throw new Error("Failed");
             }
