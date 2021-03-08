@@ -41,7 +41,7 @@ export const fetchQuestionRequest = createAsyncThunk(
                 case 200:
                     dispatch(notify({ message: "Lấy dữ liệu thành công", options: { variant: 'success' } }));
                     return response.data;
-                case 404:
+                case 401:
                     throw new Error("Unauthorized");
                 default:
                     throw new Error("Unsuccessfully");
@@ -64,7 +64,22 @@ export const createQuestionRequest = createAsyncThunk(
 
         try {
             dispatch(startLoading());
-            const response = await questionApi.pushNewQuestion(questionInfo);
+
+            //transfer schema
+            const {exam_id,content,image,answerA,answerB,answerC,answerD,answerE,correctAnswer} = questionInfo;
+            const newQuestion = {
+                examId: exam_id,
+                content:content,
+                image:image,
+                answerA:answerA,
+                answerB:answerB,
+                answerC:answerC,
+                answerD:answerD,
+                answerE:answerE,
+                result:correctAnswer
+            }
+
+            const response = await questionApi.pushNewQuestion(newQuestion);
             dispatch(stopLoading());
             switch (response.status) {
                 case 200:
@@ -93,7 +108,22 @@ export const updateQuestionRequest = createAsyncThunk(
 
         try {
             dispatch(startLoading());
-            const response = await questionApi.patchQuestionInfo(questionInfo);
+
+            //transfer schema
+            const {id,exam_id,content,image,answerA,answerB,answerC,answerD,answerE,correctAnswer} = questionInfo;
+            const newQuestion = {
+                examId: exam_id,
+                content:content,
+                image:image,
+                answerA:answerA,
+                answerB:answerB,
+                answerC:answerC,
+                answerD:answerD,
+                answerE:answerE,
+                result:correctAnswer
+            }
+
+            const response = await questionApi.patchQuestionInfo(newQuestion,id);
             dispatch(stopLoading());
 
             switch (response.status) {
@@ -229,9 +259,25 @@ export const questionSlice = createSlice({
 
     extraReducers: {
         [fetchQuestionRequest.fulfilled]: (state, action) => {
-            const data = action.payload;
-            if (data === null) return;
-            let questions = data;
+            const response_data = action.payload;
+            if (response_data === null) return;
+            let questions = response_data.rows.map(element =>{
+                const {id,examId,content,answerA,answerB,answerC,answerD,answerE,result,image} = element;
+                return {
+                    id:id,
+                    exam_id:examId,
+                    content:content,
+                    answerA:answerA,
+                    answerB:answerB,
+                    answerC:answerC,
+                    answerD:answerD,
+                    answerE:answerE,
+                    correctAnswer:result,
+                }
+            });
+            console.log(response_data);
+            state.editingQuestion = null;
+            state.chosenQuestionId = null;
             state.listQuestions = [...questions];
 
         },
